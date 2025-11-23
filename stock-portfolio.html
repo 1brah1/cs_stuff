@@ -130,6 +130,7 @@
             overflow: hidden;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
         }
 
         .viz-card:hover {
@@ -142,6 +143,40 @@
             height: auto;
             display: block;
             background: white;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .viz-card a {
+            display: block;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .viz-card a:hover img {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+
+        .viz-card a::after {
+            content: "🔍 Click to view full size";
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(102, 126, 234, 0.95);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .viz-card:hover a::after {
+            opacity: 1;
         }
 
         .viz-card-content {
@@ -261,7 +296,9 @@
                 
                 <div class="viz-grid">
                     <div class="viz-card">
-                        <img src="stock_analysis_portfolio/visualizations/price_trends.png" alt="Price Trends">
+                        <a href="stock_analysis_portfolio/visualizations/price_trends.png" target="_blank" title="Click to view full size">
+                            <img src="stock_analysis_portfolio/visualizations/price_trends.png" alt="Price Trends">
+                        </a>
                         <div class="viz-card-content">
                             <h3>Price Trends</h3>
                             <p>Individual stock price charts showing closing prices over time with high-low ranges. 
@@ -270,7 +307,9 @@
                     </div>
 
                     <div class="viz-card">
-                        <img src="stock_analysis_portfolio/visualizations/volume_analysis.png" alt="Volume Analysis">
+                        <a href="stock_analysis_portfolio/visualizations/volume_analysis.png" target="_blank" title="Click to view full size">
+                            <img src="stock_analysis_portfolio/visualizations/volume_analysis.png" alt="Volume Analysis">
+                        </a>
                         <div class="viz-card-content">
                             <h3>Volume Analysis</h3>
                             <p>Trading volume bars for each stock, helping identify periods of high activity and 
@@ -279,7 +318,9 @@
                     </div>
 
                     <div class="viz-card">
-                        <img src="stock_analysis_portfolio/visualizations/price_comparison.png" alt="Price Comparison">
+                        <a href="stock_analysis_portfolio/visualizations/price_comparison.png" target="_blank" title="Click to view full size">
+                            <img src="stock_analysis_portfolio/visualizations/price_comparison.png" alt="Price Comparison">
+                        </a>
                         <div class="viz-card-content">
                             <h3>Price Comparison</h3>
                             <p>Normalized price comparison where all stocks start at 100, making it easy to compare 
@@ -288,7 +329,9 @@
                     </div>
 
                     <div class="viz-card">
-                        <img src="stock_analysis_portfolio/visualizations/daily_changes.png" alt="Daily Changes">
+                        <a href="stock_analysis_portfolio/visualizations/daily_changes.png" target="_blank" title="Click to view full size">
+                            <img src="stock_analysis_portfolio/visualizations/daily_changes.png" alt="Daily Changes">
+                        </a>
                         <div class="viz-card-content">
                             <h3>Daily Changes</h3>
                             <p>Daily percentage changes visualization with color coding (green for gains, red for losses). 
@@ -297,7 +340,9 @@
                     </div>
 
                     <div class="viz-card">
-                        <img src="stock_analysis_portfolio/visualizations/price_range.png" alt="Price Range">
+                        <a href="stock_analysis_portfolio/visualizations/price_range.png" target="_blank" title="Click to view full size">
+                            <img src="stock_analysis_portfolio/visualizations/price_range.png" alt="Price Range">
+                        </a>
                         <div class="viz-card-content">
                             <h3>Price Range</h3>
                             <p>High-low price ranges with close price lines, illustrating the trading range and 
@@ -306,7 +351,9 @@
                     </div>
 
                     <div class="viz-card">
-                        <img src="stock_analysis_portfolio/visualizations/summary_stats.png" alt="Summary Statistics">
+                        <a href="stock_analysis_portfolio/visualizations/summary_stats.png" target="_blank" title="Click to view full size">
+                            <img src="stock_analysis_portfolio/visualizations/summary_stats.png" alt="Summary Statistics">
+                        </a>
                         <div class="viz-card-content">
                             <h3>Summary Statistics</h3>
                             <p>Four-panel summary dashboard displaying current prices, price ranges, trading volumes, 
