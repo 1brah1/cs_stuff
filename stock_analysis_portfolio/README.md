@@ -124,7 +124,3 @@ Edit `visualize.py` to modify chart styles, colors, or add new visualizations.
 ## 🤝 Contributing
 
 Feel free to fork this project and add your own visualizations!
-
----
-
-**Note**: This project demonstrates simple data collection, SQL storage, and visualization skills. Perfect for learning data analysis basics.
