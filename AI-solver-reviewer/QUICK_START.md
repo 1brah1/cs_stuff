@@ -63,7 +63,7 @@ Frontend running at `http://localhost:3000`
 ## API Keys
 
 Already configured in `backend/setup_env.py`:
-- OpenRouter API Key: `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`
+- OpenRouter API Key: `Your own API Key`
 
 ## Troubleshooting
 
