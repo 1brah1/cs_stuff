@@ -10,7 +10,7 @@ $backendEnvContent = @"
 DATABASE_URL=postgresql://user:password@localhost:5432/ai_reviewer_db
 
 # OpenRouter API
-OPENROUTER_API_KEY=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
+OPENROUTER_API_KEY="Your own API Key"
 
 # JWT Secret (generate a new one for production)
 JWT_SECRET_KEY=your-secret-key-change-in-production-use-openssl-rand-hex-32
