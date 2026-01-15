@@ -1,10 +1,10 @@
-name: Deploy Frontend to GitHub Pages
+name: Deploy AI Reviewer Frontend
 
 on:
   push:
     branches: [main]
     paths:
-      - 'frontend/**'
+      - 'AI-solver-reviewer/frontend/**'
   workflow_dispatch:
 
 permissions:
@@ -27,25 +27,30 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
+        cache-dependency-path: AI-solver-reviewer/frontend/package-lock.json
     
     - name: Install dependencies
-      working-directory: ./frontend
+      working-directory: ./AI-solver-reviewer/frontend
       run: npm ci
     
     - name: Build
-      working-directory: ./frontend
+      working-directory: ./AI-solver-reviewer/frontend
       env:
-        REACT_APP_API_URL: http://${{ secrets.EC2_HOST }}:8000
+        REACT_APP_API_URL: http://13.211.53.117:8000
       run: npm run build
     
-    - name: Setup Pages
-      uses: actions/configure-pages@v3
+    - name: Copy root index.html
+      run: |
+        mkdir -p _site
+        cp index.html _site/
+        cp stock-portfolio.html _site/
+        cp -r bluetooth_robot_car _site/
+        cp -r AI-solver-reviewer/frontend/build _site/ai-reviewer
     
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v2
       with:
-        path: './frontend/build'
+        path: './_site'
     
     - name: Deploy to GitHub Pages
       id: deployment
