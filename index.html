@@ -22,7 +22,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             width: 100%;
             background: white;
             border-radius: 20px;
@@ -51,7 +51,7 @@
         .projects {
             padding: 60px 40px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 40px;
         }
 
@@ -82,6 +82,10 @@
             background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%);
         }
 
+        .project-card.ai {
+            background: linear-gradient(135deg, #4facfe15 0%, #00f2fe15 100%);
+        }
+
         .project-icon {
             font-size: 5em;
             margin-bottom: 20px;
@@ -95,6 +99,10 @@
 
         .project-card.robot h2 {
             color: #f5576c;
+        }
+
+        .project-card.ai h2 {
+            color: #4facfe;
         }
 
         .project-card p {
@@ -130,6 +138,10 @@
             color: #f5576c;
         }
 
+        .project-card.ai .project-features li:before {
+            color: #4facfe;
+        }
+
         .btn {
             display: inline-block;
             margin-top: 20px;
@@ -149,6 +161,11 @@
             box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
         }
 
+        .project-card.ai .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
@@ -156,6 +173,10 @@
 
         .project-card.robot .btn:hover {
             box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+        }
+
+        .project-card.ai .btn:hover {
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
         }
 
         footer {
@@ -189,6 +210,22 @@
         </header>
 
         <div class="projects">
+            <a href="ai-reviewer/" class="project-card ai">
+                <div class="project-icon">🤖</div>
+                <h2>AI Document Reviewer</h2>
+                <p>
+                    Full-stack AI-powered document review application using FastAPI, React, SQLite, 
+                    and DeepSeek R1 via OpenRouter API. Deployed on AWS EC2 with Docker.
+                </p>
+                <ul class="project-features">
+                    <li>FastAPI backend with SQLite</li>
+                    <li>React TypeScript frontend</li>
+                    <li>AI-powered document analysis</li>
+                    <li>AWS EC2 deployment with Docker</li>
+                </ul>
+                <span class="btn">View Project →</span>
+            </a>
+
             <a href="stock-portfolio.html" class="project-card stock">
                 <div class="project-icon">📊</div>
                 <h2>Stock Analysis Portfolio</h2>
@@ -206,7 +243,7 @@
             </a>
 
             <a href="bluetooth_robot_car/website/index.html" class="project-card robot">
-                <div class="project-icon">🤖</div>
+                <div class="project-icon">🚗</div>
                 <h2>Bluetooth Robot Car</h2>
                 <p>
                     An Arduino-powered robot car controlled via Bluetooth from a React Native mobile app. 

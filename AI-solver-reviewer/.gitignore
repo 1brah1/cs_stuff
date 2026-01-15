@@ -2,6 +2,8 @@
 .env
 .env.local
 .env.*.local
+*.pem
+*.key
 
 # Python
 __pycache__/
@@ -38,6 +40,7 @@ Thumbs.db
 # Database
 *.db
 *.sqlite3
+data/
 
 # Logs
 *.log
@@ -47,6 +50,7 @@ logs/
 frontend/build/
 frontend/.pnp
 frontend/.pnp.js
+_site/
 
 # Testing
 .coverage
@@ -57,7 +61,6 @@ coverage/
 *.bak
 *.tmp
 
-
-
-
-
+# Deployment scripts with secrets (if any)
+deploy-to-ec2.sh
+deploy-to-ec2.ps1

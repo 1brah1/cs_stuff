@@ -1,10 +1,8 @@
-name: Deploy AI Reviewer Frontend
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
-    paths:
-      - 'AI-solver-reviewer/frontend/**'
   workflow_dispatch:
 
 permissions:
@@ -33,18 +31,19 @@ jobs:
       working-directory: ./AI-solver-reviewer/frontend
       run: npm ci
     
-    - name: Build
+    - name: Build frontend
       working-directory: ./AI-solver-reviewer/frontend
       env:
-        REACT_APP_API_URL: http://13.211.53.117:8000
+        REACT_APP_API_URL: http://${{ secrets.EC2_HOST }}:8000
       run: npm run build
     
-    - name: Copy root index.html
+    - name: Prepare deployment
       run: |
         mkdir -p _site
         cp index.html _site/
-        cp stock-portfolio.html _site/
-        cp -r bluetooth_robot_car _site/
+        cp stock-portfolio.html _site/ || true
+        cp -r bluetooth_robot_car _site/ || true
+        cp -r stock_analysis_portfolio _site/ || true
         cp -r AI-solver-reviewer/frontend/build _site/ai-reviewer
     
     - name: Upload artifact
