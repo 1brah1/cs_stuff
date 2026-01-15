@@ -24,7 +24,7 @@ python setup_env.py
 
 # Or create .env manually with:
 # DATABASE_URL=postgresql://user:password@localhost:5432/ai_reviewer_db
-# OPENROUTER_API_KEY=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
+# OPENROUTER_API_KEY=sk-or-v1-YOUR_API_KEY_HERE
 # JWT_SECRET_KEY=your-secret-key-change-in-production
 # JWT_ALGORITHM=HS256
 # FRONTEND_URL=http://localhost:3000
@@ -61,7 +61,7 @@ Frontend will run on `http://localhost:3000`
 
 The following API keys are already configured in the setup script:
 
-- **OpenRouter API Key**: `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`
+- **OpenRouter API Key**: `sk-or-v1-YOUR_API_KEY_HERE`
 - **Render API Key**: `rnd_QmKAIRotV8XIz89oiuLYBsvQ8xFT`
 
 **Security Note**: In production, store these as environment variables or secrets, never commit them to version control.

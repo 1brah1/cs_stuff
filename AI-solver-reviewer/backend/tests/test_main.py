@@ -12,3 +12,6 @@ def test_root(client):
     assert "status" in data
 
 
+
+
+

@@ -6,6 +6,7 @@ from app.models.document import Document
 from app.models.review import Review
 from app.services.openrouter_service import OpenRouterService
 from app.api.v1.endpoints.auth import get_current_user
+from app.core.session import get_session_id, get_session_expiration
 from pydantic import BaseModel
 from datetime import datetime
 import PyPDF2
@@ -34,7 +35,8 @@ class DocumentDetailResponse(DocumentResponse):
 async def upload_document(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user),
+    session_id: str = Depends(get_session_id)
 ):
     """
     Upload a document (text or PDF) for review
@@ -75,11 +77,13 @@ async def upload_document(
     else:
         content = contents.decode("utf-8")
     
-    # Create document record
+    # Create document record with session tracking and expiration
     db_document = Document(
         filename=file.filename,
         file_type=file_type,
-        content=content
+        content=content,
+        session_id=session_id,
+        expires_at=get_session_expiration(hours=1)
     )
     db.add(db_document)
     db.commit()
@@ -99,12 +103,17 @@ async def get_documents(
     skip: int = 0,
     limit: int = 20,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user),
+    session_id: str = Depends(get_session_id)
 ):
     """
-    Get list of uploaded documents with pagination
+    Get list of uploaded documents for current session with pagination
     """
-    documents = db.query(Document).offset(skip).limit(limit).all()
+    # Filter by session ID and exclude expired documents
+    documents = db.query(Document).filter(
+        Document.session_id == session_id,
+        Document.expires_at > datetime.utcnow()
+    ).offset(skip).limit(limit).all()
     
     result = []
     for doc in documents:
@@ -149,5 +158,8 @@ async def get_document(
             "created_at": r.created_at.isoformat()
         } for r in reviews]
     )
+
+
+
 
 

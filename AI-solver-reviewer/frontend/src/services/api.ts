@@ -9,12 +9,29 @@ const api = axios.create({
   },
 });
 
-// Add auth token to requests
+// Generate or retrieve session ID
+const getSessionId = (): string => {
+  let sessionId = localStorage.getItem('session_id');
+  if (!sessionId) {
+    // Generate UUID v4
+    sessionId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+    localStorage.setItem('session_id', sessionId);
+  }
+  return sessionId;
+};
+
+// Add auth token and session ID to requests
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  // Add sessionID to all requests
+  config.headers['X-Session-Id'] = getSessionId();
   return config;
 });
 
@@ -96,5 +113,8 @@ export const apiService = {
 };
 
 export default api;
+
+
+
 
 

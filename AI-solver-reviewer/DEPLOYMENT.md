@@ -44,7 +44,7 @@ This guide provides step-by-step instructions for deploying the AI Document Revi
 In the Render dashboard for your web service, go to "Environment" and add:
 
 - `DATABASE_URL`: Internal Database URL from Step 1
-- `OPENROUTER_API_KEY`: `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`
+- `OPENROUTER_API_KEY`: `sk-or-v1-YOUR_API_KEY_HERE`
 - `JWT_SECRET_KEY`: Generate a random secret (e.g., `openssl rand -hex 32`)
 - `FRONTEND_URL`: Your GitHub Pages URL (e.g., `https://yourusername.github.io/ai-solver-reviewer`)
 - `ENVIRONMENT`: `production`
@@ -204,5 +204,8 @@ For deployment issues:
 3. Verify all environment variables
 4. Test API endpoints directly
 5. Check browser console for frontend errors
+
+
+
 
 

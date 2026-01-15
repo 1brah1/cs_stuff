@@ -74,3 +74,6 @@ Write-Host "  cd backend" -ForegroundColor Yellow
 Write-Host "  pip install -r requirements.txt" -ForegroundColor Yellow
 Write-Host "  python run.py" -ForegroundColor Yellow
 
+
+
+

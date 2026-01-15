@@ -11,8 +11,12 @@ class Review(Base):
     document_id = Column(Integer, ForeignKey("documents.id"), nullable=False)
     review_text = Column(Text, nullable=False)
     status = Column(String, default="completed")
+    expires_at = Column(DateTime, nullable=False)  # Automatic expiration
     created_at = Column(DateTime, default=datetime.utcnow)
     
     document = relationship("Document", back_populates="reviews")
+
+
+
 
 

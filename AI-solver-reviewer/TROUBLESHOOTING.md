@@ -95,3 +95,6 @@ If you're stuck:
 3. Verify all prerequisites are installed
 4. Check that services (PostgreSQL) are running
 
+
+
+

@@ -6,6 +6,7 @@ from app.models.document import Document
 from app.models.review import Review
 from app.services.openrouter_service import OpenRouterService
 from app.api.v1.endpoints.auth import get_current_user
+from app.core.session import get_session_id, get_session_expiration
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -37,13 +38,18 @@ class CreateReviewResponse(BaseModel):
 async def create_review(
     document_id: int,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user),
+    session_id: str = Depends(get_session_id)
 ):
     """
     Create an AI review for a document
     """
-    # Get document
-    document = db.query(Document).filter(Document.id == document_id).first()
+    # Get document and verify it belongs to this session
+    document = db.query(Document).filter(
+        Document.id == document_id,
+        Document.session_id == session_id,
+        Document.expires_at > datetime.utcnow()
+    ).first()
     if not document:
         raise HTTPException(status_code=404, detail="Document not found")
     
@@ -56,11 +62,12 @@ async def create_review(
             detail=f"Error generating review: {str(e)}"
         )
     
-    # Create review record
+    # Create review record with expiration matching document
     db_review = Review(
         document_id=document_id,
         review_text=review_text,
-        status="completed"
+        status="completed",
+        expires_at=document.expires_at
     )
     db.add(db_review)
     db.commit()
@@ -108,12 +115,17 @@ async def get_all_reviews(
     skip: int = 0,
     limit: int = 20,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user),
+    session_id: str = Depends(get_session_id)
 ):
     """
-    Get all reviews across all documents with pagination
+    Get all reviews for current session's documents with pagination
     """
-    reviews = db.query(Review).offset(skip).limit(limit).all()
+    # Get all reviews for documents in this session that haven't expired
+    reviews = db.query(Review).join(Document).filter(
+        Document.session_id == session_id,
+        Review.expires_at > datetime.utcnow()
+    ).offset(skip).limit(limit).all()
     
     result = []
     for review in reviews:
@@ -128,5 +140,8 @@ async def get_all_reviews(
         ))
     
     return result
+
+
+
 
 

@@ -49,7 +49,7 @@ $envContent = @"
 DATABASE_URL=postgresql://$dbUser`:$Password@$dbHost`:$dbPort/$dbName
 
 # OpenRouter API
-OPENROUTER_API_KEY=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
+OPENROUTER_API_KEY=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
 
 # JWT Secret (generate a new one for production)
 JWT_SECRET_KEY=your-secret-key-change-in-production-use-openssl-rand-hex-32
@@ -67,4 +67,7 @@ Write-Host "Updated backend/.env with database connection!" -ForegroundColor Gre
 Write-Host ""
 Write-Host "Database setup complete!" -ForegroundColor Green
 Write-Host "You can now start the backend!" -ForegroundColor Cyan
+
+
+
 
