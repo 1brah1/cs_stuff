@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bluetooth Robot Car</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-inner" style="position: relative;">
+        <a href="../../index.html" style="position: absolute; top: 0; left: 0; color: white; text-decoration: none; padding: 10px 20px; background: rgba(255, 255, 255, 0.2); border-radius: 25px; transition: background 0.3s ease;">← Back to Projects</a>
+        <h1>Bluetooth Robot Car</h1>
+        <p class="tagline">
+          Arduino-powered robot car controlled from a React Native mobile app via Bluetooth.
+        </p>
+        <div class="hero-actions">
+          <a href="#get-started" class="btn primary">Get Started</a>
+          <a href="#app" class="btn secondary">Mobile App</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="overview" class="section">
+        <div class="section-inner">
+          <h2>Project Overview</h2>
+          <p>
+            This project combines an Arduino-based robot car with a Bluetooth module (HC-05/HC-06)
+            and a React Native controller app. The phone connects over classic Bluetooth and sends
+            simple text commands to drive the car.
+          </p>
+          <div class="grid two">
+            <div class="card">
+              <h3>Arduino Firmware</h3>
+              <p>
+                Reads Bluetooth serial commands like <code>F150</code> or <code>L200</code> and
+                controls the motors through an L298N driver.
+              </p>
+              <ul>
+                <li><strong>Board</strong>: Arduino-compatible</li>
+                <li><strong>Bluetooth</strong>: HC‑05 / HC‑06 (SPP)</li>
+                <li><strong>Driver</strong>: L298N dual H-bridge</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Mobile Controller</h3>
+              <p>
+                A React Native app (Android) built with <code>react-native-bluetooth-classic</code>
+                provides connect, speed, and directional controls.
+              </p>
+              <ul>
+                <li><strong>Platform</strong>: React Native CLI</li>
+                <li><strong>Connects to</strong>: HC‑05 / HC‑06</li>
+                <li><strong>Commands</strong>: Forward, Backward, Left, Right, Stop</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="hardware" class="section alt">
+        <div class="section-inner">
+          <h2>Hardware Setup</h2>
+          <p>
+            Wire your components as described below. Adjust pin numbers in the Arduino sketch if
+            you change the wiring.
+          </p>
+          <div class="grid two">
+            <div>
+              <h3>Required Components</h3>
+              <ul>
+                <li>Arduino (Uno / Nano or similar)</li>
+                <li>HC‑05 or HC‑06 Bluetooth module</li>
+                <li>L298N motor driver board</li>
+                <li>2x DC motors + chassis + wheels</li>
+                <li>Battery pack (with common ground to Arduino)</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Example Pin Mapping</h3>
+              <ul>
+                <li>ENA: 5 (PWM)</li>
+                <li>IN1: 8, IN2: 9</li>
+                <li>ENB: 6 (PWM)</li>
+                <li>IN3: 10, IN4: 11</li>
+                <li>HC‑05 TX/RX → Arduino RX/TX (with level shifting as needed)</li>
+              </ul>
+              <p class="note">
+                See <code>arduino/RobotCar.ino</code> in the repository for the exact firmware.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="protocol" class="section">
+        <div class="section-inner">
+          <h2>Bluetooth Command Protocol</h2>
+          <p>
+            The phone sends simple text commands over Bluetooth serial. Each command is terminated
+            with a newline (<code>\n</code>).
+          </p>
+          <div class="grid two">
+            <div>
+              <h3>Commands</h3>
+              <ul class="commands">
+                <li><code>F&lt;speed&gt;</code> – forward (0–255)</li>
+                <li><code>B&lt;speed&gt;</code> – backward (0–255)</li>
+                <li><code>L&lt;speed&gt;</code> – turn left</li>
+                <li><code>R&lt;speed&gt;</code> – turn right</li>
+                <li><code>S</code> – stop</li>
+                <li><code>V&lt;speed&gt;</code> – set base speed</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Example</h3>
+              <pre><code>F150\n  → drive forward at speed 150
+L120\n  → turn left at speed 120
+S\n    → stop the car
+</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="app" class="section alt">
+        <div class="section-inner">
+          <h2>React Native App</h2>
+          <p>
+            The controller app is located under
+            <code>react_native/RobotCarRN/</code> in the repository. It discovers a bonded
+            Bluetooth device named <code>HC-05</code>, <code>HC-06</code>, or <code>BT-CAR</code>
+            and sends the commands above.
+          </p>
+          <ol class="steps">
+            <li>Install dependencies with <code>npm install</code> (or <code>yarn</code>).</li>
+            <li>Connect your Android device and enable USB debugging.</li>
+            <li>Run <code>npm run android</code> inside <code>react_native/RobotCarRN</code>.</li>
+            <li>Pair your phone with the HC‑05/HC‑06 in system settings, then tap “Connect” in the app.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="get-started" class="section">
+        <div class="section-inner">
+          <h2>Get Started Locally</h2>
+          <ol class="steps">
+            <li>Clone or download this repository to your computer.</li>
+            <li>Flash the Arduino sketch at <code>arduino/RobotCar.ino</code>.</li>
+            <li>Pair your phone with the HC‑05/HC‑06 Bluetooth module.</li>
+            <li>Run the React Native app on Android and start driving your car.</li>
+          </ol>
+          <p class="note">
+            This website is a static overview only; Bluetooth control is provided by the native app,
+            not the browser.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <span>Bluetooth Robot Car</span>
+        <span>Built with Arduino &amp; React Native</span>
+      </div>
+    </footer>
+  </body>
+</html>
+
+

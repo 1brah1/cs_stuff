@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Portfolio - Choose a Project</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+
+        .projects {
+            padding: 60px 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .project-card {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            border: 3px solid transparent;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border-color: #667eea;
+        }
+
+        .project-card.stock {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+        }
+
+        .project-card.robot {
+            background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%);
+        }
+
+        .project-card.ai {
+            background: linear-gradient(135deg, #4facfe15 0%, #00f2fe15 100%);
+        }
+
+        .project-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .project-card h2 {
+            color: #667eea;
+            font-size: 2.2em;
+            margin-bottom: 15px;
+        }
+
+        .project-card.robot h2 {
+            color: #f5576c;
+        }
+
+        .project-card.ai h2 {
+            color: #4facfe;
+        }
+
+        .project-card p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .project-features {
+            list-style: none;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .project-features li {
+            color: #555;
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .project-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .project-card.robot .project-features li:before {
+            color: #f5576c;
+        }
+
+        .project-card.ai .project-features li:before {
+            color: #4facfe;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .project-card.robot .btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .project-card.ai .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .project-card.robot .btn:hover {
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+        }
+
+        .project-card.ai .btn:hover {
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5em;
+            }
+
+            .projects {
+                grid-template-columns: 1fr;
+                padding: 40px 20px;
+            }
+
+            .project-card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Project Portfolio</h1>
+            <p>Choose a project to explore</p>
+        </header>
+
+        <div class="projects">
+            <a href="ai-reviewer/" class="project-card ai">
+                <div class="project-icon">🤖</div>
+                <h2>AI Document Reviewer</h2>
+                <p>
+                    Full-stack AI-powered document review application using FastAPI, React, PostgreSQL, 
+                    and DeepSeek R1 via OpenRouter API. Deployed on AWS EC2 with Docker.
+                </p>
+                <ul class="project-features">
+                    <li>FastAPI backend with PostgreSQL</li>
+                    <li>React TypeScript frontend</li>
+                    <li>AI-powered document analysis</li>
+                    <li>AWS EC2 deployment with Docker</li>
+                </ul>
+                <span class="btn">View Project →</span>
+            </a>
+
+            <a href="stock-portfolio.html" class="project-card stock">
+                <div class="project-icon">📊</div>
+                <h2>Stock Analysis Portfolio</h2>
+                <p>
+                    A comprehensive stock market analysis tool that collects real-time data, stores it in SQLite, 
+                    and generates beautiful visualizations using Python, yFinance, pandas, and matplotlib.
+                </p>
+                <ul class="project-features">
+                    <li>Real-time stock data collection</li>
+                    <li>SQLite database storage</li>
+                    <li>6 different visualization types</li>
+                    <li>Automated data pipeline</li>
+                </ul>
+                <span class="btn">View Project →</span>
+            </a>
+
+            <a href="bluetooth_robot_car/website/index.html" class="project-card robot">
+                <div class="project-icon">🤖</div>
+                <h2>Bluetooth Robot Car</h2>
+                <p>
+                    An Arduino-powered robot car controlled via Bluetooth from a React Native mobile app. 
+                    Combines hardware and software for remote control functionality.
+                </p>
+                <ul class="project-features">
+                    <li>Arduino-based hardware</li>
+                    <li>Bluetooth connectivity (HC-05/HC-06)</li>
+                    <li>React Native mobile controller</li>
+                    <li>L298N motor driver integration</li>
+                </ul>
+                <span class="btn">View Project →</span>
+            </a>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 Project Portfolio | Explore my coding projects</p>
+        </footer>
+    </div>
+</body>
+</html>
