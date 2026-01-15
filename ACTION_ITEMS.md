@@ -19,8 +19,8 @@
 **Run this command in PowerShell:**
 
 ```powershell
-cd c:\Users\ibrah\CODE\cs_stuff\AI-solver-reviewer
-.\deploy.ps1 -EC2_IP "13.211.53.117" -KeyFile "..\Gaylord.pem" -OpenRouterKey "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"
+cd AI-solver-reviewer
+.\deploy.ps1 -EC2_IP "<YOUR_EC2_IP>" -KeyFile "..\<YOUR_KEY_FILE>.pem" -OpenRouterKey "sk-or-v1-YOUR_OPENROUTER_KEY_HERE"
 ```
 
 **This will:**
@@ -29,7 +29,7 @@ cd c:\Users\ibrah\CODE\cs_stuff\AI-solver-reviewer
 - Start the simplified Docker container
 
 **Verify it works:**
-- Visit: http://13.211.53.117:8000/health
+- Visit: http://<YOUR_EC2_IP>:8000/health
 - Should return: `{"status":"healthy"}`
 
 ---
@@ -42,11 +42,11 @@ Go to: https://github.com/1brah1/cs_stuff/settings/secrets/actions
 
 | Secret Name | Value |
 |------------|-------|
-| `OPENROUTER_API_KEY` | `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` |
+| `OPENROUTER_API_KEY` | `sk-or-v1-YOUR_OPENROUTER_KEY_HERE` |
 | `JWT_SECRET_KEY` | Run `openssl rand -hex 32` and paste result |
-| `EC2_HOST` | `13.211.53.117` |
+| `EC2_HOST` | `<YOUR_EC2_IP>` |
 | `EC2_USERNAME` | `ubuntu` |
-| `EC2_SSH_KEY` | Copy entire contents of `Gaylord.pem` file |
+| `EC2_SSH_KEY` | Copy entire contents of `<YOUR_KEY_FILE>.pem` file |
 
 ---
 
@@ -55,7 +55,7 @@ Go to: https://github.com/1brah1/cs_stuff/settings/secrets/actions
 **Push changes to GitHub:**
 
 ```bash
-cd c:\Users\ibrah\CODE\cs_stuff
+cd ..
 git add .
 git commit -m "Switch to SQLite, remove secrets, update portfolio"
 git push origin main
