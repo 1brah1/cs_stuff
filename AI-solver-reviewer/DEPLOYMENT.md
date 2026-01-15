@@ -8,7 +8,7 @@
 
 ```powershell
 cd AI-solver-reviewer
-.\deploy.ps1 -EC2_IP "13.211.53.117" -KeyFile "..\Gaylord.pem" -OpenRouterKey "YOUR_API_KEY_HERE"
+.\deploy.ps1 -EC2_IP "<YOUR_EC2_IP>" -KeyFile "..\<YOUR_KEY_FILE>.pem" -OpenRouterKey "YOUR_API_KEY_HERE"
 ```
 
 This will:
@@ -72,7 +72,7 @@ Add these secrets:
 | `JWT_SECRET_KEY` | Random 32-char hex | Run: `openssl rand -hex 32` |
 | `EC2_HOST` | `13.211.53.117` | Your EC2 public IP |
 | `EC2_USERNAME` | `ubuntu` | EC2 username |
-| `EC2_SSH_KEY` | Contents of Gaylord.pem | Copy entire file |
+| `EC2_SSH_KEY` | Contents of <YOUR_KEY_FILE>.pem | Copy entire file |
 
 ---
 
@@ -81,7 +81,7 @@ Add these secrets:
 **Backend:**
 ```powershell
 cd AI-solver-reviewer
-.\deploy.ps1 -EC2_IP "13.211.53.117" -KeyFile "..\Gaylord.pem" -OpenRouterKey "YOUR_KEY"
+.\deploy.ps1 -EC2_IP "<YOUR_EC2_IP>" -KeyFile "..\<YOUR_KEY_FILE>.pem" -OpenRouterKey "YOUR_KEY"
 ```
 
 **Frontend:**
@@ -95,7 +95,7 @@ git push origin main
 
 ### Backend not starting
 ```bash
-ssh -i Gaylord.pem ubuntu@13.211.53.117
+ssh -i <YOUR_KEY_FILE>.pem ubuntu@<YOUR_EC2_IP>
 cd ~/ai-reviewer
 docker-compose -f docker-compose.prod.yml logs backend
 ```
@@ -111,7 +111,7 @@ Visit: http://localhost:3000
 
 ### Database reset
 ```bash
-ssh -i Gaylord.pem ubuntu@13.211.53.117
+ssh -i <YOUR_KEY_FILE>.pem ubuntu@<YOUR_EC2_IP>
 cd ~/ai-reviewer/backend
 rm -rf data/
 docker-compose -f docker-compose.prod.yml restart
