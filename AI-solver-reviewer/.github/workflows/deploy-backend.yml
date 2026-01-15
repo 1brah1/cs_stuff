@@ -1,0 +1,73 @@
+name: Deploy Backend to AWS EC2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'docker-compose.prod.yml'
+      - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Deploy to EC2
+      env:
+        EC2_HOST: ${{ secrets.EC2_HOST }}
+        EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+        EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        GITHUB_USERNAME: ${{ github.repository_owner }}
+      run: |
+        # Setup SSH key
+        mkdir -p ~/.ssh
+        echo "$EC2_SSH_KEY" > ~/.ssh/ec2_key
+        chmod 600 ~/.ssh/ec2_key
+        
+        # Add EC2 to known hosts
+        ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
+        
+        # Copy files to EC2
+        scp -i ~/.ssh/ec2_key -r backend docker-compose.prod.yml $EC2_USERNAME@$EC2_HOST:~/ai-reviewer/
+        
+        # Deploy on EC2
+        ssh -i ~/.ssh/ec2_key $EC2_USERNAME@$EC2_HOST << 'ENDSSH'
+          cd ~/ai-reviewer
+          
+          # Extract database password from DATABASE_URL
+          DB_PASSWORD=$(echo $DATABASE_URL | sed -n 's/.*:\([^@]*\)@.*/\1/p')
+          
+          # Create .env file with all secrets
+          cat > .env << ENVEOF
+OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
+JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+DATABASE_URL=${{ secrets.DATABASE_URL }}
+POSTGRES_PASSWORD=${DB_PASSWORD}
+GITHUB_USERNAME=${{ github.repository_owner }}
+POSTGRES_USER=postgres
+POSTGRES_DB=ai_reviewer_db
+ENVEOF
+          
+          # Pull latest images and restart
+          docker-compose -f docker-compose.prod.yml down
+          docker-compose -f docker-compose.prod.yml build
+          docker-compose -f docker-compose.prod.yml up -d
+          
+          # Clean up old images
+          docker image prune -f
+          
+          echo "Deployment completed successfully"
+ENDSSH
+    
+    - name: Health Check
+      run: |
+        sleep 15
+        curl -f http://${{ secrets.EC2_HOST }}:8000/health || exit 1
