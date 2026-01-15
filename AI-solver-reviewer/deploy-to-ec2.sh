@@ -2,9 +2,9 @@
 # Deploy to EC2 - Run this FROM your local machine
 
 # Configuration - UPDATE THESE VALUES
-EC2_IP="YOUR_EC2_IP_HERE"
+EC2_IP="13.211.53.117"
 EC2_USER="ubuntu"
-KEY_FILE="ai-reviewer-key.pem"
+KEY_FILE="Gaylord.pem"
 OPENROUTER_KEY="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"
 JWT_SECRET=$(openssl rand -hex 32 2>/dev/null || echo "change-this-secret-key-in-production")
 

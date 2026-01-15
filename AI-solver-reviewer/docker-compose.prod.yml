@@ -11,7 +11,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - FRONTEND_URL=https://${GITHUB_USERNAME}.github.io/AI-solver-reviewer
+      - FRONTEND_URL=https://${GITHUB_USERNAME}/cs_stuff.github.io/AI-solver-reviewer
       - ENVIRONMENT=production
     depends_on:
       - postgres
