@@ -1,3 +1,4 @@
+Edit: Right now most of my stuff is not working properly so I will troubleshoot and see what is not working, also will remove unneeded parts of AI document reviewer and shift AWS to https for smoother integeration
 # CS Projects Portfolio
 
 A collection of computer science projects showcasing full-stack development, embedded systems, and data analysis.
