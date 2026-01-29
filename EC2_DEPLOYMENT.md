@@ -11,7 +11,7 @@
 
 1. **SSH into EC2:**
 ```bash
-ssh -i "C:\Users\ibrah\OneDrive\Documents\Gaylord.pem" ubuntu@13.211.53.117
+ssh -i "path/to/your-key.pem" ubuntu@<YOUR_EC2_IP>
 ```
 
 2. **Update system:**
@@ -33,7 +33,7 @@ cd ~/ai-reviewer
 
 5. **Copy backend files** (from your local machine in PowerShell):
 ```powershell
-scp -i "C:\Users\ibrah\OneDrive\Documents\Gaylord.pem" -r AI-solver-reviewer\backend ubuntu@13.211.53.117:~/ai-reviewer/
+scp -i "path/to/your-key.pem" -r AI-solver-reviewer\backend ubuntu@<YOUR_EC2_IP>:~/ai-reviewer/
 ```
 
 6. **Set up Python environment** (on EC2):
@@ -52,10 +52,8 @@ nano .env
 Add this content:
 ```
 DATABASE_URL=sqlite:///./data/ai_reviewer.db
-OPENROUTER_API_KEY=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
-JWT_SECRET_KEY=your-secret-key-change-in-production
-JWT_ALGORITHM=HS256
-FRONTEND_URL=*
+OPENROUTER_API_KEY=your_api_key_here
+FRONTEND_URL=http://<YOUR_EC2_IP>:8080
 ENVIRONMENT=production
 ```
 

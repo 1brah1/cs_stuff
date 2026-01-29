@@ -1,3 +1,0 @@
-"For now remove all unnnecessareyn info from the md files and also remove ps1 files and just ad dto the .md files how to setup and run the project and also remove all the unneccessary comments from the code.
-Also do try the remove all file paths which are only locally and anywhere else so that my privacy is mantainedd
-Also add about the error in the following image in the readme.md file of the rrot repository in cs_stuff. no nneed to resolve the issue now will do it later."
