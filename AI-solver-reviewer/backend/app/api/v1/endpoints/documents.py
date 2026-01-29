@@ -5,7 +5,6 @@ from app.db.database import get_db
 from app.models.document import Document
 from app.models.review import Review
 from app.services.openrouter_service import OpenRouterService
-from app.api.v1.endpoints.auth import get_current_user
 from app.core.session import get_session_id, get_session_expiration
 from pydantic import BaseModel
 from datetime import datetime
@@ -105,7 +104,6 @@ async def get_documents(
     skip: int = 0,
     limit: int = 20,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user),
     session_id: str = Depends(get_session_id)
 ):
     """
@@ -134,8 +132,7 @@ async def get_documents(
 @router.get("/{document_id}", response_model=DocumentDetailResponse)
 async def get_document(
     document_id: int,
-    db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
     """
     Get a specific document by ID
