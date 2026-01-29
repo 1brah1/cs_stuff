@@ -11,46 +11,39 @@ permissions:
   id-token: write
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: AI-solver-reviewer/frontend/package-lock.json
-    
-    - name: Install dependencies
-      working-directory: ./AI-solver-reviewer/frontend
-      run: npm ci
-    
-    - name: Build frontend
-      working-directory: ./AI-solver-reviewer/frontend
-      env:
-        REACT_APP_API_URL: http://${{ secrets.EC2_HOST }}:8000
-      run: npm run build
+    - name: Checkout
+      uses: actions/checkout@v4
     
     - name: Prepare deployment
       run: |
         mkdir -p _site
+        # Copy main portfolio files
         cp index.html _site/
-        cp stock-portfolio.html _site/ || true
-        cp -r bluetooth_robot_car _site/ || true
-        cp -r stock_analysis_portfolio _site/ || true
-        cp -r AI-solver-reviewer/frontend/build _site/ai-reviewer
+        cp stock-portfolio.html _site/
+        
+        # Copy project directories
+        cp -r bluetooth_robot_car _site/ 2>/dev/null || true
+        cp -r stock_analysis_portfolio _site/ 2>/dev/null || true
+        cp -r ai-reviewer _site/ 2>/dev/null || true
+        
+        # Copy any other HTML files
+        find . -maxdepth 1 -name "*.html" -not -name "index.html" -not -name "stock-portfolio.html" -exec cp {} _site/ \; 2>/dev/null || true
+    
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
     
     - name: Upload artifact
-      uses: actions/upload-pages-artifact@v2
+      uses: actions/upload-pages-artifact@v3
       with:
         path: './_site'
     
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v2
+      uses: actions/deploy-pages@v4

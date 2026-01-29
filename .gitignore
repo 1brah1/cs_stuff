@@ -5,6 +5,7 @@ __pycache__/
 .env
 *.log
 .DS_Store
+*.ps1
 AI-solver-reviewer/backend/data/
 AI-solver-reviewer/backend/uploads/
 AI-solver-reviewer/backend/*.db

@@ -1,32 +1,32 @@
-Edit: Right now most of my stuff is not working properly so I will troubleshoot and see what is not working, also will remove unneeded parts of AI document reviewer and shift AWS to https for smoother integeration
 # CS Projects Portfolio
 
 A collection of computer science projects showcasing full-stack development, embedded systems, and data analysis.
 
-🌐 **Live Portfolio:** https://1brah1.github.io/cs_stuff/
+**Live Portfolio:** https://1brah1.github.io/cs_stuff/
 
 ---
 
-## 📁 Projects
+## Projects
 
-### 🤖 AI Document Reviewer
+### AI Document Reviewer
 **Full-stack AI-powered document review application**
 
 - **Backend:** FastAPI + SQLite + OpenRouter API (DeepSeek R1)
-- **Frontend:** React + TypeScript
-- **Deployment:** AWS EC2 with Docker
+- **Frontend:** Modern HTML/CSS/JavaScript (no framework)
+- **Deployment:** AWS EC2
 - **Features:**
   - Upload PDF/TXT documents
-  - AI-powered document analysis
-  - Session-based document management
+  - AI-powered document analysis with chat interface
+  - Session-based management with auto-cleanup
   - RESTful API with automatic documentation
 
-📂 Location: `AI-solver-reviewer/`  
-🌐 Live: http://13.211.53.117:8000/docs
+Location: `AI-solver-reviewer/`  
+Live Demo: http://13.211.53.117:8080 (EC2-hosted)  
+API Docs: http://13.211.53.117:8000/docs
 
 ---
 
-### 📊 Stock Analysis Portfolio
+### Stock Analysis Portfolio
 **Real-time stock market data analysis and visualization**
 
 - **Tech Stack:** Python, yFinance, pandas, matplotlib, SQLite
@@ -36,12 +36,12 @@ A collection of computer science projects showcasing full-stack development, emb
   - 6 different visualization types
   - Historical data analysis
 
-📂 Location: `stock_analysis_portfolio/`  
-🌐 Live: https://1brah1.github.io/cs_stuff/stock-portfolio.html
+Location: `stock_analysis_portfolio/`  
+Live: https://1brah1.github.io/cs_stuff/stock-portfolio.html
 
 ---
 
-### 🚗 Bluetooth Robot Car
+### Bluetooth Robot Car
 **Arduino-powered robot car with mobile app control**
 
 - **Hardware:** Arduino, HC-05/HC-06 Bluetooth, L298N Motor Driver
@@ -51,74 +51,76 @@ A collection of computer science projects showcasing full-stack development, emb
   - Mobile app interface
   - Real-time motor control
 
-📂 Location: `bluetooth_robot_car/`  
-🌐 Live: https://1brah1.github.io/cs_stuff/bluetooth_robot_car/website/
+Location: `bluetooth_robot_car/`  
+Live: https://1brah1.github.io/cs_stuff/bluetooth_robot_car/website/
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### AI Document Reviewer
 
-**Local Development:**
+**EC2 Deployment:**
+
+See [EC2_DEPLOYMENT.md](EC2_DEPLOYMENT.md) for detailed instructions.
+
+Quick version:
 ```bash
-# Backend
-cd AI-solver-reviewer/backend
+# 1. Copy backend files to EC2 (from Windows PowerShell)
+scp -i "C:\Users\ibrah\OneDrive\Documents\Gaylord.pem" -r AI-solver-reviewer\backend ubuntu@13.211.53.117:~/ai-reviewer/
+
+# 2. Copy frontend files to EC2
+scp -i "C:\Users\ibrah\OneDrive\Documents\Gaylord.pem" -r AI-solver-reviewer\frontend-simple ubuntu@13.211.53.117:~/ai-reviewer/
+
+# 3. SSH into EC2
+ssh -i "C:\Users\ibrah\OneDrive\Documents\Gaylord.pem" ubuntu@13.211.53.117
+
+# 4. Install dependencies and run backend
+cd ~/ai-reviewer/backend
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
-python setup_env.py  # Enter your OpenRouter API key
+# Create .env with OPENROUTER_API_KEY
 python run.py
 
-# Frontend
-cd AI-solver-reviewer/frontend
-npm install
-npm start
-```
-
-**Production (EC2):**
-```bash
-# On EC2 instance
-cd ~/ai-reviewer
-docker-compose -f docker-compose.prod.yml up -d
+# 5. In another terminal, run frontend
+cd ~/ai-reviewer/frontend-simple
+python3 -m http.server 8080
 ```
 
 ---
 
-## 🔐 GitHub Secrets Required
+## GitHub Secrets (Optional)
 
-For automated deployment via GitHub Actions, set these secrets in your repository:
+For automated backend deployment via GitHub Actions (currently not configured):
 
 ### Required Secrets:
-1. **`OPENROUTER_API_KEY`** - Your OpenRouter API key (get from https://openrouter.ai/)
-2. **`JWT_SECRET_KEY`** - Random secret for JWT tokens (generate with `openssl rand -hex 32`)
-3. **`EC2_HOST`** - Your EC2 public IP address
-4. **`EC2_USERNAME`** - EC2 username (usually `ubuntu`)
-5. **`EC2_SSH_KEY`** - Contents of your EC2 private key (.pem file)
+1. **`OPENROUTER_API_KEY`** - Your OpenRouter API key
+2. **`EC2_HOST`** - Your EC2 public IP (13.211.53.117)
+3. **`EC2_USERNAME`** - EC2 username (ubuntu)
+4. **`EC2_SSH_KEY`** - Contents of your EC2 private key (.pem file)
 
-### How to Add Secrets:
-1. Go to: https://github.com/1brah1/cs_stuff/settings/secrets/actions
-2. Click "New repository secret"
-3. Add each secret with the exact name above
+Currently deployment is manual via SCP/SSH.
 
 ---
 
-## 📦 Repository Structure
+## Repository Structure
 
 ```
 cs_stuff/
 ├── .github/
-│   └── workflows/          # GitHub Actions CI/CD
-│       ├── deploy-frontend.yml
-│       └── deploy-backend.yml
-├── AI-solver-reviewer/     # AI Document Reviewer project
-│   ├── backend/           # FastAPI backend
-│   ├── frontend/          # React frontend
-│   └── docker-compose.prod.yml
-├── stock_analysis_portfolio/  # Stock analysis project
-├── bluetooth_robot_car/   # Robot car project
-├── hashtable_implementation/  # C++ data structures
-├── KiCad_electronic_schematics/  # PCB designs
-├── index.html            # Portfolio homepage
-└── README.md            # This file
+│   └── workflows/             # GitHub Actions
+│       └── deploy-frontend.yml  # GitHub Pages deployment
+├── AI-solver-reviewer/         # AI Document Reviewer
+│   ├── backend/              # FastAPI backend
+│   ├── frontend-simple/      # Simple HTML/CSS/JS frontend (EC2)
+│   └── frontend/             # React frontend (legacy, not used)
+├── stock_analysis_portfolio/  # Stock analysis
+├── bluetooth_robot_car/      # Robot car project
+├── ai-reviewer/              # GitHub Pages showcase for AI reviewer
+├── index.html                # Main portfolio page
+├── stock-portfolio.html      # Stock portfolio page
+└── EC2_DEPLOYMENT.md         # EC2 deployment guide
 ```
 
 ---
