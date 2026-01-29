@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Form
 from sqlalchemy.orm import Session
 from typing import List
 from app.db.database import get_db
@@ -33,15 +33,12 @@ class DocumentDetailResponse(DocumentResponse):
 @router.post("/upload", response_model=DocumentResponse)
 async def upload_document(
     file: UploadFile = File(...),
-    session_id: str = None,
+    session_id: str = Form(...),
     db: Session = Depends(get_db)
 ):
     """
     Upload a document (text or PDF) for review
     """
-    # Get session ID from form data if provided
-    if not session_id:
-        session_id = get_session_id()
     # Validate file type
     if not file.filename:
         raise HTTPException(status_code=400, detail="Filename is required")
