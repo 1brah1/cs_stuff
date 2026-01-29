@@ -20,9 +20,37 @@ function init() {
     // Setup event listeners
     setupUploadArea();
     setupChatInput();
+    setupMobileTabs(); // New function
 
     // Cleanup on page unload
     window.addEventListener('beforeunload', cleanup);
+}
+
+function setupMobileTabs() {
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sidebar = document.getElementById('sidebar-view');
+    const chatView = document.getElementById('chat-view');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Remove active class from all tabs
+            tabs.forEach(t => t.classList.remove('active'));
+            // Add active to clicked
+            tab.classList.add('active');
+
+            const target = tab.dataset.tab;
+            if (target === 'upload') {
+                sidebar.classList.add('active');
+                chatView.classList.remove('active');
+            } else {
+                sidebar.classList.remove('active');
+                chatView.classList.add('active');
+                // Scroll to bottom of chat
+                const messages = document.getElementById('chat-messages');
+                messages.scrollTop = messages.scrollHeight;
+            }
+        });
+    });
 }
 
 function generateSessionId() {
