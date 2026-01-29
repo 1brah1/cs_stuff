@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -87,8 +88,10 @@
         }
 
         .project-icon {
-            font-size: 5em;
+            font-size: 3em;
             margin-bottom: 20px;
+            font-weight: bold;
+            color: #667eea;
         }
 
         .project-card h2 {
@@ -202,19 +205,20 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
-            <h1>🚀 Project Portfolio</h1>
+            <h1>Project Portfolio</h1>
             <p>Choose a project to explore</p>
         </header>
 
         <div class="projects">
             <a href="ai-reviewer/" class="project-card ai">
-                <div class="project-icon">🤖</div>
+                <div class="project-icon">AI</div>
                 <h2>AI Document Reviewer</h2>
                 <p>
-                    Full-stack AI-powered document review application using FastAPI, React, SQLite, 
+                    Full-stack AI-powered document review application using FastAPI, React, SQLite,
                     and DeepSeek R1 via OpenRouter API. Deployed on AWS EC2 with Docker.
                 </p>
                 <ul class="project-features">
@@ -227,10 +231,10 @@
             </a>
 
             <a href="stock-portfolio.html" class="project-card stock">
-                <div class="project-icon">📊</div>
+                <div class="project-icon">CHART</div>
                 <h2>Stock Analysis Portfolio</h2>
                 <p>
-                    A comprehensive stock market analysis tool that collects real-time data, stores it in SQLite, 
+                    A comprehensive stock market analysis tool that collects real-time data, stores it in SQLite,
                     and generates beautiful visualizations using Python, yFinance, pandas, and matplotlib.
                 </p>
                 <ul class="project-features">
@@ -243,10 +247,10 @@
             </a>
 
             <a href="bluetooth_robot_car/website/index.html" class="project-card robot">
-                <div class="project-icon">🚗</div>
+                <div class="project-icon">CAR</div>
                 <h2>Bluetooth Robot Car</h2>
                 <p>
-                    An Arduino-powered robot car controlled via Bluetooth from a React Native mobile app. 
+                    An Arduino-powered robot car controlled via Bluetooth from a React Native mobile app.
                     Combines hardware and software for remote control functionality.
                 </p>
                 <ul class="project-features">
@@ -264,4 +268,5 @@
         </footer>
     </div>
 </body>
+
 </html>

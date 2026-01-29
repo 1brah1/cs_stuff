@@ -41,6 +41,7 @@ Thumbs.db
 *.db
 *.sqlite3
 data/
+uploads/
 
 # Logs
 *.log
@@ -64,3 +65,4 @@ coverage/
 # Deployment scripts with secrets (if any)
 deploy-to-ec2.sh
 deploy-to-ec2.ps1
+

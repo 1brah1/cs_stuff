@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Document Reviewer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="../index.html" class="back-link">← Back to Portfolio</a>
+            <h1>AI Document Reviewer</h1>
+            <p>Upload your documents and get AI-powered analysis using DeepSeek</p>
+            <div class="launch-section">
+                <p class="launch-text">This is a showcase of the AI Document Reviewer project. To use the live
+                    application:</p>
+                <a href="http://13.211.53.117:8000" class="btn-launch" target="_blank">Launch Live Application →</a>
+                <p class="note">The live app runs on AWS EC2 and includes full functionality</p>
+            </div>
+        </header>
+
+        <main>
+            <section class="project-info">
+                <h2>About This Project</h2>
+                <p>
+                    A full-stack AI-powered document review application built with FastAPI, SQLite, and DeepSeek R1 via
+                    OpenRouter API.
+                    Upload PDF or TXT documents and interact with an AI assistant to get insights, summaries, and
+                    analysis.
+                </p>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>Document Upload</h3>
+                        <p>Support for PDF and TXT files with automatic text extraction</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>AI Chat Interface</h3>
+                        <p>Interactive conversation with DeepSeek AI about your documents</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Session Management</h3>
+                        <p>Automatic cleanup when you close the browser for privacy</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Full-Stack Architecture</h3>
+                        <p>FastAPI backend, SQLite database, deployed on AWS EC2</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="tech-stack">
+                <h2>Technology Stack</h2>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <h4>Backend</h4>
+                        <ul>
+                            <li>FastAPI</li>
+                            <li>SQLAlchemy</li>
+                            <li>SQLite</li>
+                            <li>OpenRouter API</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h4>AI Model</h4>
+                        <ul>
+                            <li>DeepSeek R1</li>
+                            <li>Context-aware responses</li>
+                            <li>Document analysis</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h4>Frontend</h4>
+                        <ul>
+                            <li>Vanilla JavaScript</li>
+                            <li>Modern CSS</li>
+                            <li>Responsive Design</li>
+                        </ul>
+                    </div>
+                    <div class="tech-item">
+                        <h4>Deployment</h4>
+                        <ul>
+                            <li>AWS EC2</li>
+                            <li>Docker</li>
+                            <li>Background cleanup jobs</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="resources">
+                <h2>Project Resources</h2>
+                <div class="resource-links">
+                    <a href="https://github.com/1brah1/cs_stuff/tree/main/AI-solver-reviewer" class="btn-resource"
+                        target="_blank">
+                        View on GitHub
+                    </a>
+                    <a href="https://github.com/1brah1/cs_stuff/blob/main/AI-solver-reviewer/README.md"
+                        class="btn-resource" target="_blank">
+                        Documentation
+                    </a>
+                    <a href="http://13.211.53.117:8000/docs" class="btn-resource" target="_blank">
+                        API Docs
+                    </a>
+                </div>
+            </section>
+
+            <section class="demo-section">
+                <h2>Features Demo</h2>
+                <div class="demo-grid">
+                    <div class="demo-card">
+                        <h3>Step 1: Upload Documents</h3>
+                        <p>Drag and drop or click to upload PDF or TXT files. The system automatically extracts text
+                            content for AI analysis.</p>
+                    </div>
+                    <div class="demo-card">
+                        <h3>Step 2: Ask Questions</h3>
+                        <p>Chat with the AI about your documents. Ask for summaries, key points, specific information,
+                            or analysis.</p>
+                    </div>
+                    <div class="demo-card">
+                        <h3>Step 3: Get Insights</h3>
+                        <p>Receive AI-powered analysis and insights based on the document content using DeepSeek's
+                            advanced language model.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Built with FastAPI, SQLite, and DeepSeek AI</p>
+            <p>Part of Ibrahim's CS Portfolio</p>
+        </footer>
+    </div>
+</body>
+
+</html>

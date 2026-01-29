@@ -1,0 +1,11 @@
+tasks.md
+Answers.md
+*.pyc
+__pycache__/
+.env
+*.log
+.DS_Store
+AI-solver-reviewer/backend/data/
+AI-solver-reviewer/backend/uploads/
+AI-solver-reviewer/backend/*.db
+node_modules/

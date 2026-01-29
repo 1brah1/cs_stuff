@@ -34,13 +34,15 @@ class DocumentDetailResponse(DocumentResponse):
 @router.post("/upload", response_model=DocumentResponse)
 async def upload_document(
     file: UploadFile = File(...),
-    db: Session = Depends(get_db),
-    current_user = Depends(get_current_user),
-    session_id: str = Depends(get_session_id)
+    session_id: str = None,
+    db: Session = Depends(get_db)
 ):
     """
     Upload a document (text or PDF) for review
     """
+    # Get session ID from form data if provided
+    if not session_id:
+        session_id = get_session_id()
     # Validate file type
     if not file.filename:
         raise HTTPException(status_code=400, detail="Filename is required")
@@ -158,6 +160,7 @@ async def get_document(
             "created_at": r.created_at.isoformat()
         } for r in reviews]
     )
+
 
 
 
