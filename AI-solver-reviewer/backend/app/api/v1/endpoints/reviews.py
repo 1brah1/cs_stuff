@@ -5,7 +5,7 @@ from app.db.database import get_db
 from app.models.document import Document
 from app.models.review import Review
 from app.services.openrouter_service import OpenRouterService
-from app.api.v1.endpoints.auth import get_current_user
+# from app.api.v1.endpoints.auth import get_current_user
 from app.core.session import get_session_id, get_session_expiration
 from pydantic import BaseModel
 from datetime import datetime
@@ -38,7 +38,7 @@ class CreateReviewResponse(BaseModel):
 async def create_review(
     document_id: int,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user),
+    # current_user = Depends(get_current_user),
     session_id: str = Depends(get_session_id)
 ):
     """
@@ -86,7 +86,7 @@ async def create_review(
 async def get_reviews(
     document_id: int,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    # current_user = Depends(get_current_user)
 ):
     """
     Get all reviews for a document
@@ -115,7 +115,7 @@ async def get_all_reviews(
     skip: int = 0,
     limit: int = 20,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user),
+    # current_user = Depends(get_current_user),
     session_id: str = Depends(get_session_id)
 ):
     """
