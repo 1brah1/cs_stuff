@@ -9,9 +9,34 @@ class OpenRouterService:
         self.base_url = "https://openrouter.ai/api/v1/chat/completions"
         self.model = "deepseek/deepseek-r1:free"
     
-    async def _call_api(self, messages: list[Dict[str, Any]], temperature: float = 0.7) -> str:
+    async def review_document(self, content: str) -> str:
         """
-        Internal method to call OpenRouter API
+        Send document content to DeepSeek R1T2 for review via OpenRouter
+        """
+        prompt = f"""Please review the following document and provide comprehensive feedback. 
+        
+Focus on:
+1. Content quality and clarity
+2. Grammar and spelling
+3. Structure and organization
+4. Suggestions for improvement
+5. Overall assessment
+
+Document Content:
+{content}
+
+Please provide a detailed review with actionable feedback."""
+        return await self._call_openrouter(prompt)
+
+    async def generate_response(self, prompt: str) -> str:
+        """
+        Generate a response for chat interactions
+        """
+        return await self._call_openrouter(prompt)
+
+    async def _call_openrouter(self, prompt: str) -> str:
+        """
+        Internal method to make the API call
         """
         headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -22,8 +47,13 @@ class OpenRouterService:
         
         payload = {
             "model": self.model,
-            "messages": messages,
-            "temperature": temperature,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "temperature": 0.7,
             "max_tokens": 2000
         }
         
