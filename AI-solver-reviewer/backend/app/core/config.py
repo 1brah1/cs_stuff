@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     
     @property
     def CORS_ORIGINS(self) -> List[str]:
-        return [self.FRONTEND_URL, "http://localhost:5173", "https://1brah1.github.io"]
+        return [self.FRONTEND_URL, "http://localhost:5173", "https://1brah1.github.io", "http://13.211.53.117:8080"]
     
     class Config:
         env_file = ".env"
