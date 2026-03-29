@@ -18,102 +18,70 @@ function init() {
     document.getElementById('session-id').textContent = sessionId;
 
     // Setup event listeners
-    setupUploadArea();
     setupChatInput();
-    setupMobileTabs(); // New function
+    setupAttachment();
 
     // Cleanup on page unload
     window.addEventListener('beforeunload', cleanup);
-}
-
-function setupMobileTabs() {
-    const tabs = document.querySelectorAll('.tab-btn');
-    const sidebar = document.getElementById('sidebar-view');
-    const chatView = document.getElementById('chat-view');
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            // Remove active class from all tabs
-            tabs.forEach(t => t.classList.remove('active'));
-            // Add active to clicked
-            tab.classList.add('active');
-
-            const target = tab.dataset.tab;
-            if (target === 'upload') {
-                sidebar.classList.add('active');
-                chatView.classList.remove('active');
-            } else {
-                sidebar.classList.remove('active');
-                chatView.classList.add('active');
-                // Scroll to bottom of chat
-                const messages = document.getElementById('chat-messages');
-                messages.scrollTop = messages.scrollHeight;
-            }
-        });
-    });
 }
 
 function generateSessionId() {
     return 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
 }
 
-function setupUploadArea() {
-    const uploadArea = document.getElementById('upload-area');
+function setupAttachment() {
+    const attachBtn = document.getElementById('attach-btn');
     const fileInput = document.getElementById('file-input');
-    const uploadBtn = document.getElementById('upload-btn');
-
-    uploadArea.addEventListener('click', () => fileInput.click());
+    
+    attachBtn.addEventListener('click', () => {
+        if (!isUploading) {
+            fileInput.click();
+        }
+    });
 
     fileInput.addEventListener('change', (e) => {
-        selectedFiles = Array.from(e.target.files);
-        updateUploadButton();
-    });
-
-    // Drag and drop
-    uploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadArea.classList.add('drag-over');
-    });
-
-    uploadArea.addEventListener('dragleave', () => {
-        uploadArea.classList.remove('drag-over');
-    });
-
-    uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadArea.classList.remove('drag-over');
-        const files = Array.from(e.dataTransfer.files).filter(f =>
+        const files = Array.from(e.target.files).filter(f =>
             f.name.endsWith('.pdf') || f.name.endsWith('.txt')
         );
-        selectedFiles = files;
-        fileInput.files = e.dataTransfer.files;
-        updateUploadButton();
+        if(files.length > 0) {
+            selectedFiles = files;
+            displayFilePills();
+            uploadFiles();
+        }
     });
-
-    uploadBtn.addEventListener('click', uploadFiles);
 }
 
-function updateUploadButton() {
-    const uploadBtn = document.getElementById('upload-btn');
-    const uploadPrompt = document.querySelector('.upload-prompt p');
+function displayFilePills() {
+    const container = document.getElementById('file-pills-container');
+    container.innerHTML = ''; // clear existing
+    selectedFiles.forEach(file => {
+        const pill = document.createElement('div');
+        pill.className = 'file-pill';
+        pill.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <span class="file-name">${file.name}</span>
+            <span class="upload-status">Uploading...</span>
+        `;
+        container.appendChild(pill);
+    });
+}
 
-    if (selectedFiles.length > 0) {
-        uploadBtn.style.display = 'block';
-        uploadBtn.textContent = `Upload ${selectedFiles.length} file(s)`;
-        uploadPrompt.textContent = `${selectedFiles.length} file(s) selected`;
-    } else {
-        uploadBtn.style.display = 'none';
-        uploadPrompt.textContent = 'Click or drag files here';
-    }
+function clearFilePills() {
+    const container = document.getElementById('file-pills-container');
+    container.innerHTML = '';
+    selectedFiles = [];
 }
 
 async function uploadFiles() {
     if (isUploading || selectedFiles.length === 0) return;
 
     isUploading = true;
-    const uploadBtn = document.getElementById('upload-btn');
-    uploadBtn.disabled = true;
-    uploadBtn.textContent = 'Uploading...';
+    const attachBtn = document.getElementById('attach-btn');
+    attachBtn.disabled = true;
+
+    // Clear Welcome Hero
+    const hero = document.getElementById('welcome-hero');
+    if(hero) hero.style.display = 'none';
 
     for (const file of selectedFiles) {
         try {
@@ -130,9 +98,16 @@ async function uploadFiles() {
                 throw new Error(`Upload failed: ${response.statusText}`);
             }
 
-            const result = await response.json();
-            addDocumentToList(file.name, file.size);
-            addMessage('assistant', `Successfully uploaded "${file.name}". You can now ask me questions about it!`);
+            // Update pill UI
+            const pills = document.querySelectorAll('.file-pill');
+            pills.forEach(pill => {
+                if(pill.textContent.includes(file.name)) {
+                    pill.classList.add('success');
+                    pill.querySelector('.upload-status').textContent = 'Ready';
+                }
+            });
+
+            addMessage('system', `Successfully uploaded "${file.name}". I can now analyze it for you.`);
 
         } catch (error) {
             console.error('Upload error:', error);
@@ -140,34 +115,12 @@ async function uploadFiles() {
         }
     }
 
-    // Reset
-    selectedFiles = [];
     document.getElementById('file-input').value = '';
-    updateUploadButton();
     isUploading = false;
-    uploadBtn.disabled = false;
-}
-
-function addDocumentToList(name, size) {
-    const documentList = document.getElementById('document-list');
-    const emptyState = documentList.querySelector('.empty-state');
-    if (emptyState) emptyState.remove();
-
-    const docItem = document.createElement('div');
-    docItem.className = 'document-item';
-    docItem.innerHTML = `
-        <div class="document-name">${name}</div>
-        <div class="document-size">${formatBytes(size)}</div>
-    `;
-    documentList.appendChild(docItem);
-}
-
-function formatBytes(bytes) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    attachBtn.disabled = false;
+    
+    // Clear the pills automatically after 5 seconds
+    setTimeout(clearFilePills, 5000);
 }
 
 function setupChatInput() {
@@ -175,6 +128,7 @@ function setupChatInput() {
     const sendBtn = document.getElementById('send-btn');
 
     chatInput.addEventListener('keydown', (e) => {
+        // Prevent default enter behavior and send message if shift isn't pressed
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             sendMessage();
@@ -182,8 +136,18 @@ function setupChatInput() {
     });
 
     chatInput.addEventListener('input', () => {
+        // Auto resize height
         chatInput.style.height = 'auto';
-        chatInput.style.height = chatInput.scrollHeight + 'px';
+        chatInput.style.height = Math.min(chatInput.scrollHeight, 200) + 'px';
+        
+        // Toggle send button state
+        if(chatInput.value.trim() !== '') {
+            sendBtn.disabled = false;
+            sendBtn.classList.add('active');
+        } else {
+            sendBtn.disabled = true;
+            sendBtn.classList.remove('active');
+        }
     });
 
     sendBtn.addEventListener('click', sendMessage);
@@ -195,17 +159,23 @@ async function sendMessage() {
 
     if (!message || isSending) return;
 
+    // Reset input states
     isSending = true;
     const sendBtn = document.getElementById('send-btn');
     sendBtn.disabled = true;
-
-    // Add user message
+    sendBtn.classList.remove('active');
+    
+    // Create User DOM Node
     addMessage('user', message);
     chatInput.value = '';
     chatInput.style.height = 'auto';
 
-    // Add loading message
-    const loadingId = addMessage('loading', 'AI is thinking...');
+    // Clear Welcome Hero
+    const hero = document.getElementById('welcome-hero');
+    if(hero) hero.style.display = 'none';
+
+    // Spawn loading state
+    const loadingId = addMessage('loading', '');
 
     try {
         const response = await fetch(`${API_BASE_URL}/chat`, {
@@ -224,11 +194,7 @@ async function sendMessage() {
         }
 
         const result = await response.json();
-
-        // Remove loading message
         removeMessage(loadingId);
-
-        // Add AI response
         addMessage('assistant', result.response);
 
     } catch (error) {
@@ -238,49 +204,52 @@ async function sendMessage() {
     }
 
     isSending = false;
-    sendBtn.disabled = false;
     chatInput.focus();
 }
 
+// Generate the message blocks dynamically
 function addMessage(type, content) {
     const chatMessages = document.getElementById('chat-messages');
-    const welcomeMessage = chatMessages.querySelector('.welcome-message');
-    if (welcomeMessage) welcomeMessage.remove();
 
     const messageId = 'msg-' + Date.now();
+    const messageWrapper = document.createElement('div');
+    messageWrapper.id = messageId;
+    messageWrapper.className = `message-wrapper ${type}-wrapper`;
+    
     const messageEl = document.createElement('div');
-    messageEl.id = messageId;
     messageEl.className = `message ${type}`;
 
     if (type === 'loading') {
-        messageEl.innerHTML = `
-            <span class="loading-dots">
-                <span>.</span><span>.</span><span>.</span>
-            </span>
-            ${content}
-        `;
+        const loader = document.createElement('div');
+        loader.className = 'spinner';
+        messageEl.appendChild(loader);
     } else if (type === 'assistant') {
+        // We use marked parse because previously we injected marked.min.js into the html
         messageEl.innerHTML = marked.parse(content);
     } else {
-        messageEl.textContent = content;
+        messageEl.textContent = content; // For pure text payloads like user/system overrides
     }
 
-    chatMessages.appendChild(messageEl);
-    messageEl.scrollIntoView({ behavior: 'smooth' });
+    messageWrapper.appendChild(messageEl);
+    chatMessages.appendChild(messageWrapper);
+    
+    // Smooth auto scroll to the new message
+    chatMessages.parentNode.scrollTo({
+        top: chatMessages.parentNode.scrollHeight,
+        behavior: 'smooth'
+    });
 
     return messageId;
 }
 
 function removeMessage(messageId) {
-    const message = document.getElementById(messageId);
-    if (message) message.remove();
+    const wrapper = document.getElementById(messageId);
+    if (wrapper) wrapper.remove();
 }
 
 async function cleanup() {
     if (!sessionId) return;
-
     try {
-        // Send cleanup request (don't wait for response)
         navigator.sendBeacon(`${API_BASE_URL}/session/${sessionId}/cleanup`);
     } catch (error) {
         console.error('Cleanup error:', error);
