@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { apiService, Review } from '../services/api';
 import './ReviewPage.css';
+import ReactMarkdown from 'react-markdown';
 
 const ReviewPage: React.FC = () => {
   const { documentId } = useParams<{ documentId: string }>();
@@ -49,20 +50,7 @@ const ReviewPage: React.FC = () => {
     }
   };
 
-  const formatReviewText = (text: string) => {
-    // Simple formatting: split by double newlines for paragraphs
-    const paragraphs = text.split('\n\n');
-    return paragraphs.map((para, index) => (
-      <p key={index} className="review-paragraph">
-        {para.split('\n').map((line, lineIndex) => (
-          <React.Fragment key={lineIndex}>
-            {line}
-            {lineIndex < para.split('\n').length - 1 && <br />}
-          </React.Fragment>
-        ))}
-      </p>
-    ));
-  };
+
 
   if (isLoading) {
     return (
@@ -107,7 +95,7 @@ const ReviewPage: React.FC = () => {
                 </span>
               </div>
               <div className="review-content">
-                {formatReviewText(review.review_text)}
+                <ReactMarkdown>{review.review_text}</ReactMarkdown>
               </div>
             </div>
           ))}

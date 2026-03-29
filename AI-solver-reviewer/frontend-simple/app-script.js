@@ -259,6 +259,8 @@ function addMessage(type, content) {
             </span>
             ${content}
         `;
+    } else if (type === 'assistant') {
+        messageEl.innerHTML = marked.parse(content);
     } else {
         messageEl.textContent = content;
     }

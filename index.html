@@ -1,272 +1,430 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Portfolio - Choose a Project</title>
+    <title>Ibrahim's Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            /* Light Theme Variables */
+            --bg-base: #fdfdfd;
+            --bg-gradient: radial-gradient(circle at 50% -20%, #eaeaea, #fdfdfd);
+            --text-main: #111111;
+            --text-muted: #666666;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --card-border: rgba(0, 0, 0, 0.05);
+            --accent: #d32f2f;
+            --accent-hover: #b71c1c;
+            --nav-bg: rgba(253, 253, 253, 0.8);
+            --shadow: 0 12px 30px rgba(0,0,0,0.05);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme Variables (Red Aesthetic) */
+            --bg-base: #0a0000;
+            --bg-gradient: radial-gradient(circle at 50% 0%, #300202, #0a0000 70%);
+            --text-main: #ffffff;
+            --text-muted: #ffbaba;
+            --card-bg: rgba(40, 5, 5, 0.4);
+            --card-border: rgba(255, 60, 60, 0.15);
+            --accent: #ff4d4d;
+            --accent-hover: #ff7575;
+            --nav-bg: rgba(10, 0, 0, 0.8);
+            --shadow: 0 12px 30px rgba(255,0,0,0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            background-image: var(--bg-gradient);
+            color: var(--text-main);
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            background: var(--nav-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 100;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -1px;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-tools {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s ease, color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .social-links a:hover {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            width: 100%;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 60px 40px;
-            text-align: center;
-        }
-
-        header h1 {
-            font-size: 3.5em;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        header p {
-            font-size: 1.3em;
-            opacity: 0.95;
-        }
-
-        .projects {
-            padding: 60px 40px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
-        }
-
-        .project-card {
-            background: #f8f9fa;
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
+            backdrop-filter: blur(5px);
+            margin-left: 10px;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 180px 5% 100px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            color: var(--text-muted);
+            max-width: 600px;
+            font-weight: 300;
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* Projects Grid */
+        .projects-section {
+            padding: 0 5% 100px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--card-border);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        /* Card Design */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 40px 30px;
             text-decoration: none;
-            color: inherit;
-            display: block;
-            border: 3px solid transparent;
-        }
-
-        .project-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            border-color: #667eea;
-        }
-
-        .project-card.stock {
-            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-        }
-
-        .project-card.robot {
-            background: linear-gradient(135deg, #f093fb15 0%, #f5576c15 100%);
-        }
-
-        .project-card.ai {
-            background: linear-gradient(135deg, #4facfe15 0%, #00f2fe15 100%);
-        }
-
-        .project-icon {
-            font-size: 3em;
-            margin-bottom: 20px;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .project-card h2 {
-            color: #667eea;
-            font-size: 2.2em;
-            margin-bottom: 15px;
-        }
-
-        .project-card.robot h2 {
-            color: #f5576c;
-        }
-
-        .project-card.ai h2 {
-            color: #4facfe;
-        }
-
-        .project-card p {
-            color: #666;
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .project-features {
-            list-style: none;
-            text-align: left;
-            margin-top: 20px;
-        }
-
-        .project-features li {
-            color: #555;
-            padding: 8px 0;
-            padding-left: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
             position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+            opacity: 0;
+            animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
         }
 
-        .project-features li:before {
-            content: "✓";
+        .card:nth-child(2) { animation-delay: 0.5s; }
+        .card:nth-child(3) { animation-delay: 0.6s; }
+        .card:nth-child(4) { animation-delay: 0.7s; }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow);
+            border-color: var(--accent);
+        }
+
+        .card::before {
+            content: '';
             position: absolute;
+            top: 0;
             left: 0;
-            color: #667eea;
-            font-weight: bold;
-            font-size: 1.2em;
+            width: 100%;
+            height: 4px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .project-card.robot .project-features li:before {
-            color: #f5576c;
+        .card:hover::before {
+            transform: scaleX(1);
         }
 
-        .project-card.ai .project-features li:before {
-            color: #4facfe;
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(255, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        
+        [data-theme="dark"] .card-icon {
+            background: rgba(255, 60, 60, 0.1);
         }
 
-        .btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 1.1em;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        .card h3 {
+            font-size: 1.5rem;
+            color: var(--text-main);
+            font-weight: 600;
+            letter-spacing: -0.5px;
         }
 
-        .project-card.robot .btn {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            flex: 1;
         }
 
-        .project-card.ai .btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        .card-link-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 10px;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        .card:hover .card-link-text svg {
+            transform: translateX(5px);
         }
 
-        .project-card.robot .btn:hover {
-            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+        .card-link-text svg {
+            transition: transform 0.3s ease;
         }
 
-        .project-card.ai .btn:hover {
-            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
+        /* Animations */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         footer {
-            background: #2c3e50;
-            color: white;
-            padding: 30px;
             text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--card-border);
         }
 
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 2.5em;
+            .hero h1 {
+                font-size: 2.5rem;
             }
-
-            .projects {
+            .grid {
                 grid-template-columns: 1fr;
-                padding: 40px 20px;
             }
-
-            .project-card {
-                padding: 30px 20px;
+            .nav-tools {
+                gap: 10px;
             }
         }
     </style>
 </head>
+<body data-theme="dark">
 
-<body>
-    <div class="container">
-        <header>
-            <h1>Project Portfolio</h1>
-            <p>Choose a project to explore</p>
-        </header>
-
-        <div class="projects">
-            <a href="ai-reviewer/" class="project-card ai">
-                <div class="project-icon">AI</div>
-                <h2>AI Document Reviewer</h2>
-                <p>
-                    Full-stack AI-powered document review application using FastAPI, React, SQLite,
-                    and DeepSeek R1 via OpenRouter API. Deployed on AWS EC2 with Docker.
-                </p>
-                <ul class="project-features">
-                    <li>FastAPI backend with SQLite</li>
-                    <li>React TypeScript frontend</li>
-                    <li>AI-powered document analysis</li>
-                    <li>AWS EC2 deployment with Docker</li>
-                </ul>
-                <span class="btn">View Project →</span>
-            </a>
-
-            <a href="stock-portfolio.html" class="project-card stock">
-                <div class="project-icon">CHART</div>
-                <h2>Stock Analysis Portfolio</h2>
-                <p>
-                    A comprehensive stock market analysis tool that collects real-time data, stores it in SQLite,
-                    and generates beautiful visualizations using Python, yFinance, pandas, and matplotlib.
-                </p>
-                <ul class="project-features">
-                    <li>Real-time stock data collection</li>
-                    <li>SQLite database storage</li>
-                    <li>6 different visualization types</li>
-                    <li>Automated data pipeline</li>
-                </ul>
-                <span class="btn">View Project →</span>
-            </a>
-
-            <a href="bluetooth_robot_car/website/index.html" class="project-card robot">
-                <div class="project-icon">CAR</div>
-                <h2>Bluetooth Robot Car</h2>
-                <p>
-                    An Arduino-powered robot car controlled via Bluetooth from a React Native mobile app.
-                    Combines hardware and software for remote control functionality.
-                </p>
-                <ul class="project-features">
-                    <li>Arduino-based hardware</li>
-                    <li>Bluetooth connectivity (HC-05/HC-06)</li>
-                    <li>React Native mobile controller</li>
-                    <li>L298N motor driver integration</li>
-                </ul>
-                <span class="btn">View Project →</span>
-            </a>
+    <nav>
+        <div class="logo">IBR<span>.</span></div>
+        <div class="nav-tools">
+            <div class="social-links">
+                <a href="mailto:mikhalid@connect.ust.hk" aria-label="Email">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </a>
+                <a href="https://github.com/1brah1" target="_blank" aria-label="Github">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                </a>
+                <a href="https://linkedin.com/in/" target="_blank" aria-label="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                </a>
+            </div>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+                <!-- Moon icon default for dark mode starting -> showing sun to swap to light -->
+                <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
         </div>
+    </nav>
 
-        <footer>
-            <p>&copy; 2024 Project Portfolio | Explore my coding projects</p>
-        </footer>
-    </div>
+    <header class="hero">
+        <h1>Crafting digital<br>experiences.</h1>
+        <p>Hi, I'm Ibrahim. A developer bridging the gap between sophisticated backend architecture and clean backend designs through AI and engineering.</p>
+    </header>
+
+    <main class="projects-section">
+        <h2 class="section-title">Selected Works</h2>
+        <div class="grid">
+            
+            <a href="https://github.com/1brah1/VQA_Project-COMP4901D-" target="_blank" class="card">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                </div>
+                <h3>VQA Project</h3>
+                <p>Visual Question Answering implementation exploring computer vision and natural language processing techniques.</p>
+                <div class="card-link-text">
+                    View Project <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </div>
+            </a>
+
+            <a href="ai-reviewer/" class="card">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>
+                </div>
+                <h3>AI Document Reviewer</h3>
+                <p>Full-stack AI-powered document review application utilizing FastAPI, SQLite, and DeepSeek R1.</p>
+                <div class="card-link-text">
+                    Explore App <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </div>
+            </a>
+
+            <a href="stock-portfolio.html" class="card">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                </div>
+                <h3>Stock Analysis Portfolio</h3>
+                <p>Data pipeline and visualization tool analyzing market trends in real-time, backed by Python and yFinance.</p>
+                <div class="card-link-text">
+                    View Data <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </div>
+            </a>
+
+            <a href="bluetooth_robot_car/website/index.html" class="card">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 16 10 11 15 11 5"></polygon><polygon points="11 19 16 14 11 9 11 19"></polygon><line x1="16" y1="10" x2="8" y2="18"></line><line x1="16" y1="14" x2="8" y2="6"></line></svg>
+                </div>
+                <h3>Bluetooth Robot</h3>
+                <p>Arduino hardware integration mapped to a React Native mobile controller for seamless remote access.</p>
+                <div class="card-link-text">
+                    Hardware Build <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Ibrahim Portfolio. Built with precision.</p>
+    </footer>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        
+        const moonSvg = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+        const sunSvg = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+
+        // Set initial icon based on theme
+        if(document.body.getAttribute('data-theme') === 'dark') {
+            themeIcon.innerHTML = sunSvg;
+        } else {
+            themeIcon.innerHTML = moonSvg;
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'light');
+                themeIcon.innerHTML = moonSvg; // Show moon when in light mode to switch to dark
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                themeIcon.innerHTML = sunSvg; // Show sun when in dark mode to switch to light
+            }
+        });
+    </script>
 </body>
-
 </html>

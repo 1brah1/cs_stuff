@@ -40,10 +40,8 @@ async def get_session_id(x_session_id: Optional[str] = Header(None)) -> str:
             detail="Session ID required. Include X-Session-Id header."
         )
     
-    # Basic validation
-    try:
-        uuid.UUID(x_session_id)
-    except ValueError:
+    # Basic validation (just ensure it's not empty)
+    if not x_session_id or len(x_session_id) < 5:
         raise HTTPException(
             status_code=400,
             detail="Invalid session ID format"
