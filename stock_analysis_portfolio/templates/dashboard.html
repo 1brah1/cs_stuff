@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stock ETL Live Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Live ETL Dashboard</p>
+        <h1>Stock Analysis Portfolio</h1>
+        <p class="hero-copy">Auto-refreshing charts powered by incremental SQLite ETL.</p>
+      </div>
+      <div class="hero-actions">
+        <button id="refreshNowButton" class="btn-primary" type="button">Refresh Now</button>
+        <div class="status-block">
+          <p>Interval <span id="refreshInterval">{{ refresh_seconds }}</span>s</p>
+          <p>Last update <span id="lastUpdate">-</span></p>
+          <p>Status <span id="etlStatus">Idle</span></p>
+        </div>
+      </div>
+    </header>
+
+    <section class="card-grid" id="summaryCards"></section>
+
+    <section class="chart-grid">
+      <article class="chart-card chart-card-wide">
+        <h2>Normalized Price Comparison</h2>
+        <canvas id="comparisonChart"></canvas>
+      </article>
+
+      <article class="chart-card">
+        <h2>Daily Change (%)</h2>
+        <label for="dailySymbolSelect">Symbol</label>
+        <select id="dailySymbolSelect">
+          {% for symbol in symbols %}
+          <option value="{{ symbol }}">{{ symbol }}</option>
+          {% endfor %}
+        </select>
+        <canvas id="dailyChangeChart"></canvas>
+      </article>
+
+      <article class="chart-card">
+        <h2>Volume (Millions)</h2>
+        <label for="volumeSymbolSelect">Symbol</label>
+        <select id="volumeSymbolSelect">
+          {% for symbol in symbols %}
+          <option value="{{ symbol }}">{{ symbol }}</option>
+          {% endfor %}
+        </select>
+        <canvas id="volumeChart"></canvas>
+      </article>
+
+      <article class="chart-card chart-card-wide">
+        <h2>Price Trend with High/Low Range</h2>
+        <label for="trendSymbolSelect">Symbol</label>
+        <select id="trendSymbolSelect">
+          {% for symbol in symbols %}
+          <option value="{{ symbol }}">{{ symbol }}</option>
+          {% endfor %}
+        </select>
+        <canvas id="trendChart"></canvas>
+      </article>
+    </section>
+  </div>
+
+  <script>
+    window.DASHBOARD_CONFIG = {
+      refreshSeconds: {{ refresh_seconds }},
+      symbols: {{ symbols | tojson }}
+    };
+  </script>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
