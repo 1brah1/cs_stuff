@@ -194,26 +194,36 @@ def dashboard():
 @app.route("/api/timeseries")
 def api_timeseries():
     symbols = _normalize_symbols(request.args.get("symbols"))
-    return jsonify({"symbols": symbols, "series": _query_timeseries(symbols)})
+    try:
+        return jsonify({"symbols": symbols, "series": _query_timeseries(symbols), "error": None})
+    except Exception as exc:
+        return jsonify({"symbols": symbols, "series": [], "error": str(exc)})
 
 
 @app.route("/api/summary")
 def api_summary():
     symbols = _normalize_symbols(request.args.get("symbols"))
-    return jsonify({"symbols": symbols, "summary": _query_summary(symbols)})
+    try:
+        return jsonify({"symbols": symbols, "summary": _query_summary(symbols), "error": None})
+    except Exception as exc:
+        return jsonify({"symbols": symbols, "summary": [], "error": str(exc)})
 
 
 @app.route("/api/health")
 def api_health():
-    ensure_database_ready()
-
-    conn = create_connection(DB_PATH)
+    row = (None, 0)
+    health_error = None
     try:
-        row = conn.execute("SELECT MAX(updated_at), COUNT(*) FROM stock_prices").fetchone()
-    except sqlite3.OperationalError:
-        row = (None, 0)
-    finally:
-        conn.close()
+        ensure_database_ready()
+        conn = create_connection(DB_PATH)
+        try:
+            row = conn.execute("SELECT MAX(updated_at), COUNT(*) FROM stock_prices").fetchone()
+        except sqlite3.OperationalError:
+            row = (None, 0)
+        finally:
+            conn.close()
+    except Exception as exc:
+        health_error = str(exc)
 
     return jsonify(
         {
@@ -223,7 +233,7 @@ def api_health():
             "last_db_update": row[0] if row else None,
             "row_count": int(row[1]) if row else 0,
             "last_success": refresh_state["last_success"],
-            "last_error": refresh_state["last_error"],
+            "last_error": refresh_state["last_error"] or health_error,
             "is_running": refresh_state["is_running"],
             "server_time_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
         }
