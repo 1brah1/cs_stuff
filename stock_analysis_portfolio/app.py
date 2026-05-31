@@ -4,6 +4,7 @@ Serves a dark themed UI and JSON APIs with periodic ETL refresh.
 """
 
 import os
+import sqlite3
 import threading
 from datetime import datetime, UTC
 
@@ -11,7 +12,7 @@ import pandas as pd
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 
-from data_collector import STOCKS, collect_all_data, create_connection
+from data_collector import STOCKS, collect_all_data, create_connection, initialize_database
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -32,6 +33,15 @@ refresh_state = {
 refresh_stop_event = threading.Event()
 background_started = False
 background_lock = threading.Lock()
+
+
+def ensure_database_ready():
+    """Ensure the stock_prices table exists before serving API requests."""
+    conn = create_connection(DB_PATH)
+    try:
+        initialize_database(conn)
+    finally:
+        conn.close()
 
 
 def _normalize_symbols(raw_symbols):
@@ -91,6 +101,8 @@ def start_background_jobs():
 
 
 def _query_timeseries(symbols):
+    ensure_database_ready()
+
     placeholders = ",".join(["?"] * len(symbols))
     query = (
         "SELECT symbol, date, open, high, low, close, volume, adj_close, updated_at "
@@ -100,6 +112,8 @@ def _query_timeseries(symbols):
     conn = create_connection(DB_PATH)
     try:
         df = pd.read_sql_query(query, conn, params=symbols)
+    except sqlite3.OperationalError:
+        return []
     finally:
         conn.close()
 
@@ -135,6 +149,8 @@ def _query_timeseries(symbols):
 
 
 def _query_summary(symbols):
+    ensure_database_ready()
+
     placeholders = ",".join(["?"] * len(symbols))
     query = (
         "SELECT symbol, MIN(low) AS min_price, MAX(high) AS max_price, "
@@ -152,6 +168,8 @@ def _query_summary(symbols):
             f"WHERE sp.symbol IN ({placeholders})"
         )
         latest_df = pd.read_sql_query(latest_query, conn, params=symbols)
+    except sqlite3.OperationalError:
+        return []
     finally:
         conn.close()
 
@@ -187,9 +205,13 @@ def api_summary():
 
 @app.route("/api/health")
 def api_health():
+    ensure_database_ready()
+
     conn = create_connection(DB_PATH)
     try:
         row = conn.execute("SELECT MAX(updated_at), COUNT(*) FROM stock_prices").fetchone()
+    except sqlite3.OperationalError:
+        row = (None, 0)
     finally:
         conn.close()
 
