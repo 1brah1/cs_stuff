@@ -5,11 +5,11 @@ Serves a dark themed UI and JSON APIs with periodic ETL refresh.
 
 import os
 import threading
-import time
 from datetime import datetime, UTC
 
 import pandas as pd
 from flask import Flask, jsonify, render_template, request
+from flask_cors import CORS
 
 from data_collector import STOCKS, collect_all_data, create_connection
 
@@ -21,12 +21,17 @@ FETCH_PERIOD = os.getenv("STOCK_FETCH_PERIOD", "5d")
 FETCH_INTERVAL = os.getenv("STOCK_FETCH_INTERVAL", "1d")
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
+allowed_origins = [origin.strip() for origin in os.getenv("CORS_ORIGINS", "*").split(",") if origin.strip()]
+CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
+
 refresh_state = {
     "last_success": None,
     "last_error": None,
     "is_running": False,
 }
 refresh_stop_event = threading.Event()
+background_started = False
+background_lock = threading.Lock()
 
 
 def _normalize_symbols(raw_symbols):
@@ -70,6 +75,19 @@ def start_refresh_thread():
     thread = threading.Thread(target=refresh_loop, daemon=True)
     thread.start()
     return thread
+
+
+def start_background_jobs():
+    global background_started
+
+    with background_lock:
+        if background_started:
+            return
+        background_started = True
+
+    # Warm the dataset once, then keep periodic refresh running.
+    threading.Thread(target=run_etl_once, kwargs={"stocks": STOCKS}, daemon=True).start()
+    start_refresh_thread()
 
 
 def _query_timeseries(symbols):
@@ -198,7 +216,5 @@ def api_refresh():
 
 
 if __name__ == "__main__":
-    # Prime initial data quickly before the refresh loop starts.
-    run_etl_once(STOCKS)
-    start_refresh_thread()
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    start_background_jobs()
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")), debug=False)

@@ -76,6 +76,32 @@ set STOCK_REFRESH_SECONDS=120
 python run_dashboard.py
 ```
 
+## Deploy API + GitHub Pages Frontend
+
+This repository now supports the split deployment model:
+
+1. Host the Flask API service (Render or another Python host).
+2. Serve the public dashboard from GitHub Pages at [stock-portfolio.html](../stock-portfolio.html).
+
+### Render Deployment
+
+1. Connect the repository in Render.
+2. Use Blueprint deployment with [render.yaml](../render.yaml), or create a manual Web Service with:
+3. Root directory: [stock_analysis_portfolio](.)
+4. Build command: `pip install -r requirements.txt`
+5. Start command: `gunicorn wsgi:app --workers 1 --threads 4 --timeout 120`
+6. Set `CORS_ORIGINS=https://1brah1.github.io`
+
+After deploy, copy your hosted API URL (example: `https://stock-analysis-api.onrender.com`).
+
+### Connect Frontend
+
+1. Open [stock-portfolio.html](../stock-portfolio.html) on GitHub Pages.
+2. Paste the hosted API URL into "Hosted API Base URL".
+3. Click "Save API URL" and then "Connect".
+
+The page stores the API URL in browser local storage and starts auto-refreshing charts.
+
 ## Database Notes
 
 Table: `stock_prices`

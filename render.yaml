@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: stock-analysis-api
+    env: python
+    rootDir: stock_analysis_portfolio
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app --workers 1 --threads 4 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: STOCK_REFRESH_SECONDS
+        value: 300
+      - key: STOCK_FETCH_PERIOD
+        value: 5d
+      - key: STOCK_FETCH_INTERVAL
+        value: 1d
+      - key: CORS_ORIGINS
+        value: https://1brah1.github.io
