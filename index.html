@@ -64,7 +64,7 @@
             font-family: var(--font-body);
             background: var(--bg);
             background-image:
-                radial-gradient(ellipse 80% 50% at 50% -10%, var(--accent-soft), transparent 55%),
+                radial-gradient(ellipse 60% 40% at 50% -5%, var(--accent-soft), transparent 50%),
                 linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
             background-attachment: fixed;
             color: var(--text);
@@ -224,11 +224,10 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
             font-weight: 500;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
+            letter-spacing: 0.01em;
             color: #fff;
             background: var(--accent);
             padding: 0.85rem 1.35rem;
@@ -242,11 +241,10 @@
         }
 
         .btn-ghost {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
             font-weight: 500;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
+            letter-spacing: 0.01em;
             color: var(--text-muted);
             padding: 0.85rem 0.25rem;
             border-bottom: 1px solid transparent;
@@ -256,6 +254,195 @@
         .btn-ghost:hover {
             color: var(--accent);
             border-color: var(--accent);
+        }
+
+        /* ——— Latest ——— */
+        .latest {
+            padding: 0 clamp(1.25rem, 5vw, 3.5rem) clamp(3rem, 8vh, 5rem);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .featured-card {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+            gap: 0;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--bg-soft);
+            opacity: 0;
+            transform: translateY(28px);
+            transition:
+                opacity 0.7s var(--ease),
+                transform 0.7s var(--ease),
+                border-color 0.3s var(--ease),
+                box-shadow 0.3s var(--ease);
+        }
+
+        .featured-card.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .featured-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 12px 40px var(--accent-soft);
+            transform: translateY(-3px);
+        }
+
+        .featured-card.active:hover {
+            transform: translateY(-3px);
+        }
+
+        .featured-body {
+            padding: clamp(1.75rem, 4vw, 2.5rem);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .featured-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .featured-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+            font-weight: 550;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            transition: color 0.25s var(--ease);
+        }
+
+        .featured-card:hover .featured-title {
+            color: var(--accent);
+        }
+
+        .featured-blurb {
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 32rem;
+            line-height: 1.6;
+        }
+
+        .featured-footer {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: auto;
+            padding-top: 0.5rem;
+        }
+
+        .featured-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .featured-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text);
+            transition: color 0.25s var(--ease), gap 0.25s var(--ease);
+        }
+
+        .featured-card:hover .featured-link {
+            color: var(--accent);
+            gap: 0.65rem;
+        }
+
+        .featured-link svg {
+            transition: transform 0.25s var(--ease);
+        }
+
+        .featured-card:hover .featured-link svg {
+            transform: translateX(3px);
+        }
+
+        .featured-preview {
+            position: relative;
+            min-height: 220px;
+            background:
+                linear-gradient(135deg, var(--accent-soft) 0%, transparent 50%),
+                linear-gradient(225deg, rgba(190, 18, 60, 0.04) 0%, transparent 40%),
+                var(--chip-bg);
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .featured-preview {
+            background:
+                linear-gradient(135deg, var(--accent-soft) 0%, transparent 50%),
+                linear-gradient(225deg, rgba(225, 29, 72, 0.06) 0%, transparent 40%),
+                var(--chip-bg);
+        }
+
+        .featured-preview::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 24px 24px;
+            opacity: 0.5;
+            animation: gridShift 20s linear infinite;
+        }
+
+        .featured-preview-inner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .parallelogram {
+            width: 72px;
+            height: 52px;
+            background: var(--accent);
+            opacity: 0.35;
+            transform: skewX(-18deg);
+            border-radius: 2px;
+            animation: floatShape 6s ease-in-out infinite;
+        }
+
+        .parallelogram:nth-child(2) {
+            width: 48px;
+            height: 48px;
+            opacity: 0.2;
+            margin-left: -20px;
+            margin-top: 30px;
+            animation-delay: -2s;
+        }
+
+        .parallelogram:nth-child(3) {
+            width: 36px;
+            height: 36px;
+            opacity: 0.15;
+            margin-left: 40px;
+            margin-top: -25px;
+            animation-delay: -4s;
+        }
+
+        @keyframes gridShift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(24px, 24px); }
+        }
+
+        @keyframes floatShape {
+            0%, 100% { transform: skewX(-18deg) translateY(0); }
+            50% { transform: skewX(-18deg) translateY(-8px); }
         }
 
         /* ——— Works ——— */
@@ -384,11 +571,8 @@
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             font-weight: 500;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
             color: var(--text);
             transition: color 0.25s var(--ease), gap 0.25s var(--ease);
         }
@@ -438,6 +622,15 @@
         }
 
         @media (max-width: 900px) {
+            .featured-card {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-preview {
+                min-height: 160px;
+                order: -1;
+            }
+
             .project-inner {
                 grid-template-columns: 2.5rem 1fr;
                 gap: 0.65rem 1rem;
@@ -487,14 +680,26 @@
                 animation: none;
             }
 
-            .project-row {
+            .project-row,
+            .featured-card {
                 opacity: 1;
                 transform: none;
-                transition: background 0.2s ease;
+                transition: background 0.2s ease, border-color 0.2s ease;
+            }
+
+            .featured-card:hover,
+            .featured-card.active:hover {
+                transform: none;
+            }
+
+            .featured-preview::before,
+            .parallelogram {
+                animation: none;
             }
 
             .btn-primary:hover,
-            .project-row:hover .project-affordance svg {
+            .project-row:hover .project-affordance svg,
+            .featured-card:hover .featured-link svg {
                 transform: none;
             }
         }
@@ -525,17 +730,51 @@
         <p class="hero-eyebrow">Portfolio · 2026</p>
         <h1>Crafting digital <em>experiences.</em></h1>
         <p class="hero-lead">
-            Hi, I’m Ibrahim — a developer bridging sophisticated backend systems with crisp visual craft.
-            Here’s a curated set of works across AI, data, and hardware.
+            Hi, I'm Ibrahim — a developer bridging sophisticated backend systems with crisp visual craft.
+            Here's a curated set of works across AI, data, and hardware.
         </p>
         <div class="hero-cta">
-            <a class="btn-primary" href="#work">
-                Selected works
+            <a class="btn-primary" href="#latest">
+                Latest project
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
             </a>
+            <a class="btn-ghost" href="#work">Selected works</a>
             <a class="btn-ghost" href="https://github.com/1brah1" target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>
     </header>
+
+    <section class="latest" id="latest">
+        <div class="section-head revealable">
+            <h2 class="section-title">Latest</h2>
+            <span class="section-label">Jul 2026</span>
+        </div>
+
+        <a href="https://1brah1.github.io/signed-area/" target="_blank" rel="noopener noreferrer" class="featured-card revealable">
+            <div class="featured-body">
+                <span class="featured-label">New</span>
+                <h3 class="featured-title">Signed Area</h3>
+                <p class="featured-blurb">I built this to make linear algebra click — signed area, convex hulls, SVD, PCA, probability, rank &amp; approximation error, attention and softmax — all as one scrollable story.</p>
+                <div class="featured-footer">
+                    <div class="featured-chips">
+                        <span class="chip">Linear algebra</span>
+                        <span class="chip">SVD &amp; PCA</span>
+                        <span class="chip">Attention</span>
+                    </div>
+                    <span class="featured-link">
+                        Open project
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </span>
+                </div>
+            </div>
+            <div class="featured-preview" aria-hidden="true">
+                <div class="featured-preview-inner">
+                    <div class="parallelogram"></div>
+                    <div class="parallelogram"></div>
+                    <div class="parallelogram"></div>
+                </div>
+            </div>
+        </a>
+    </section>
 
     <main class="works" id="work">
         <div class="section-head revealable">
