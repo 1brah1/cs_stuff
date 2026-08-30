@@ -1,142 +1,150 @@
 # Deployment Guide
 
-## 🚀 Quick Deployment Steps
+Production hosting is **Render** (backend) + **GitHub Pages** (frontend). AWS EC2 is no longer used.
 
-### 1. Deploy Backend to EC2
+**Live URLs**
 
-**From your local machine (PowerShell):**
+- Frontend: [https://1brah1.github.io/cs_stuff/ai-reviewer/](https://1brah1.github.io/cs_stuff/ai-reviewer/)
+- API: [https://cs-stuff-1.onrender.com](https://cs-stuff-1.onrender.com)
+- API docs: [https://cs-stuff-1.onrender.com/docs](https://cs-stuff-1.onrender.com/docs)
 
-```powershell
-cd AI-solver-reviewer
-.\deploy.ps1 -EC2_IP "<YOUR_EC2_IP>" -KeyFile "..\<YOUR_KEY_FILE>.pem" -OpenRouterKey "YOUR_API_KEY_HERE"
-```
-
-This will:
-- Copy backend files to EC2
-- Create .env with your secrets
-- Build and start Docker containers
-- Test the deployment
-
-**Verify:**
-- Health: http://13.211.53.117:8000/health
-- API Docs: http://13.211.53.117:8000/docs
+The Render free tier sleeps after about 15 minutes idle. The first request after that can take 30–60 seconds.
 
 ---
 
-### 2. Deploy Frontend to GitHub Pages
+## 1. Backend (Render)
 
-**Option A: Automatic (Recommended)**
+Service dashboard: [https://dashboard.render.com/web/srv-daa7at95efls73dufi30](https://dashboard.render.com/web/srv-daa7at95efls73dufi30)
 
-Just push to GitHub:
+### Create or update the web service
+
+1. [Render Dashboard](https://dashboard.render.com) → **New** → **Web Service**
+2. Connect repo `1brah1/cs_stuff`
+3. Settings:
+
+| Setting | Value |
+|---------|-------|
+| Branch | `main` |
+| Root Directory | `AI-solver-reviewer/backend` |
+| Runtime | Python 3 |
+| Build Command | `pip install -r requirements.txt` |
+| Start Command | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
+| Plan | Free |
+
+`runtime.txt` pins Python **3.12.7**. Without this, Render may pick Python 3.14 and the `pydantic==2.5.0` install will fail.
+
+### Environment variables
+
+| Key | Value |
+|-----|-------|
+| `PYTHON_VERSION` | `3.12.7` |
+| `OPENROUTER_API_KEY` | From [openrouter.ai/keys](https://openrouter.ai/keys) |
+| `JWT_SECRET_KEY` | Random string (`openssl rand -hex 32`) |
+| `DATABASE_URL` | `sqlite:///./data/ai_reviewer.db` |
+| `FRONTEND_URL` | `https://1brah1.github.io` |
+| `ENVIRONMENT` | `production` |
+
+Do **not** commit `backend/.env`. Secrets belong in the Render dashboard only.
+
+### Redeploy
+
+Push to `main`. Render rebuilds from `AI-solver-reviewer/backend`.
+
 ```bash
-git add .
-git commit -m "Deploy updates"
 git push origin main
 ```
 
-GitHub Actions will automatically build and deploy.
+Or use **Manual Deploy** in the Render dashboard.
 
-**Option B: Manual**
+### Verify
+
+- [https://cs-stuff-1.onrender.com/health](https://cs-stuff-1.onrender.com/health) → `{"status":"healthy"}`
+- [https://cs-stuff-1.onrender.com/docs](https://cs-stuff-1.onrender.com/docs) → Swagger UI
+
+---
+
+## 2. Frontend (GitHub Pages)
+
+GitHub Pages is served from the **`gh-pages`** branch (not `main`).
 
 ```bash
 cd AI-solver-reviewer/frontend
+# .env.production already sets REACT_APP_API_URL=https://cs-stuff-1.onrender.com
+npm install
 npm run build
-cd ../..
-mkdir _site
-copy index.html _site\
-xcopy /E /I AI-solver-reviewer\frontend\build _site\ai-reviewer
-cd _site
-git init
-git add -A
-git commit -m "Deploy"
-git branch -M gh-pages
-git remote add origin https://github.com/1brah1/cs_stuff.git
-git push -f origin gh-pages
 ```
 
-**Verify:**
-- Portfolio: https://1brah1.github.io/cs_stuff/
-- AI Reviewer: https://1brah1.github.io/cs_stuff/ai-reviewer/
+Copy `frontend/build/` onto `gh-pages` as `ai-reviewer/`, then push:
 
----
-
-## 📋 GitHub Secrets Required
-
-Go to: https://github.com/1brah1/cs_stuff/settings/secrets/actions
-
-Add these secrets:
-
-| Secret Name | Value | How to Get |
-|------------|-------|------------|
-| `OPENROUTER_API_KEY` | Your API key | https://openrouter.ai/ |
-| `JWT_SECRET_KEY` | Random 32-char hex | Run: `openssl rand -hex 32` |
-| `EC2_HOST` | `13.211.53.117` | Your EC2 public IP |
-| `EC2_USERNAME` | `ubuntu` | EC2 username |
-| `EC2_SSH_KEY` | Contents of <YOUR_KEY_FILE>.pem | Copy entire file |
-
----
-
-## 🔄 Update Deployment
-
-**Backend:**
-```powershell
-cd AI-solver-reviewer
-.\deploy.ps1 -EC2_IP "<YOUR_EC2_IP>" -KeyFile "..\<YOUR_KEY_FILE>.pem" -OpenRouterKey "YOUR_KEY"
-```
-
-**Frontend:**
 ```bash
-git push origin main
+git checkout gh-pages
+# replace ai-reviewer/ with the new build output
+git add ai-reviewer
+git commit -m "Point AI reviewer frontend at Render API"
+git push origin gh-pages
 ```
+
+**Verify**
+
+- Portfolio: [https://1brah1.github.io/cs_stuff/](https://1brah1.github.io/cs_stuff/)
+- AI Reviewer: [https://1brah1.github.io/cs_stuff/ai-reviewer/](https://1brah1.github.io/cs_stuff/ai-reviewer/)
+
+Leave the existing **stock-analysis-api** Render service on `gh-pages` alone (`srv-d8dsn3po3t8c73esgrdg`).
 
 ---
 
-## 🐛 Troubleshooting
+## 3. Branch map
 
-### Backend not starting
-```bash
-ssh -i <YOUR_KEY_FILE>.pem ubuntu@<YOUR_EC2_IP>
-cd ~/ai-reviewer
-docker-compose -f docker-compose.prod.yml logs backend
-```
-
-### Frontend upload fails
-**Issue:** HTTPS/HTTP mixed content  
-**Solution:** Run locally for now:
-```bash
-cd AI-solver-reviewer/frontend
-npm start
-```
-Visit: http://localhost:3000
-
-### Database reset
-```bash
-ssh -i <YOUR_KEY_FILE>.pem ubuntu@<YOUR_EC2_IP>
-cd ~/ai-reviewer/backend
-rm -rf data/
-docker-compose -f docker-compose.prod.yml restart
-```
+| What | Branch | Path |
+|------|--------|------|
+| AI reviewer backend | `main` | `AI-solver-reviewer/backend/` |
+| AI reviewer frontend source | `main` | `AI-solver-reviewer/frontend/` |
+| Published static site | `gh-pages` | `ai-reviewer/` |
+| Stock API | `gh-pages` | `stock_analysis_portfolio/` |
 
 ---
 
-## ✅ Checklist
+## Troubleshooting
 
-Before deploying:
-- [ ] GitHub secrets configured
-- [ ] EC2 security group allows port 8000
-- [ ] Docker installed on EC2
-- [ ] OpenRouter API key obtained
-- [ ] .pem key file has correct permissions
+### Build fails with `pydantic-core` / `maturin`
 
-After deploying:
-- [ ] Backend health check passes
-- [ ] API docs accessible
-- [ ] Frontend loads on GitHub Pages
-- [ ] Can upload documents locally
+Render used Python 3.14. Set `PYTHON_VERSION=3.12.7` and keep `runtime.txt`.
+
+### First page load is slow
+
+Free-tier cold start. Wait and retry.
+
+### Upload works but review fails
+
+Check `OPENROUTER_API_KEY` on the Render service.
+
+### Mixed content / CORS
+
+The API is HTTPS. The frontend origin is `https://1brah1.github.io`. Backend CORS currently allows all origins.
+
+### SQLite data disappeared
+
+Expected on Render redeploy. Fine for a portfolio demo.
 
 ---
 
-## 📞 Need Help?
+## Checklist
 
-Check the main README.md for detailed troubleshooting.
+Before deploy:
 
+- [ ] `OPENROUTER_API_KEY` set on Render
+- [ ] `PYTHON_VERSION=3.12.7`
+- [ ] `FRONTEND_URL=https://1brah1.github.io`
+
+After deploy:
+
+- [ ] `/health` returns healthy
+- [ ] `/docs` loads
+- [ ] GitHub Pages app loads
+- [ ] Upload a `.txt` file and generate a review
+
+---
+
+## Need help?
+
+See [README.md](./README.md) for local setup and API details.

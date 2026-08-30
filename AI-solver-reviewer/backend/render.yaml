@@ -5,6 +5,8 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
       - key: DATABASE_URL
         sync: false
       - key: OPENROUTER_API_KEY
@@ -21,6 +23,7 @@ databases:
     plan: free
     databaseName: ai_reviewer_db
     user: ai_reviewer_user
+
 
 
 

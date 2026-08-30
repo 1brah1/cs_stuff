@@ -1,25 +1,28 @@
 # AI Document Reviewer
 
-AI-powered document review application using DeepSeek R1 via OpenRouter API. Upload documents and get instant AI feedback on content quality, grammar, structure, and improvements.
+AI-powered document review application using DeepSeek via OpenRouter. Upload a `.txt` or `.pdf` file and get instant feedback on content quality, grammar, structure, and improvements.
 
-🌐 **Live Demo:** http://13.211.53.117:8000/docs
+**Live demo:** [https://1brah1.github.io/cs_stuff/ai-reviewer/](https://1brah1.github.io/cs_stuff/ai-reviewer/)  
+**API docs:** [https://cs-stuff-1.onrender.com/docs](https://cs-stuff-1.onrender.com/docs)
 
----
-
-## 🎯 What It Does
-
-1. **Upload** - Drop a .txt or .pdf file
-2. **Review** - AI analyzes your document in seconds
-3. **Improve** - Get actionable feedback on quality, grammar, and structure
+The Render free tier sleeps after about 15 minutes of idle time. The first request after that can take 30–60 seconds to wake up.
 
 ---
 
-## 🏗️ Architecture
+## What it does
+
+1. **Upload** — drop a `.txt` or `.pdf` file
+2. **Review** — the AI analyzes the document
+3. **Improve** — get actionable feedback on quality, grammar, and structure
+
+---
+
+## Architecture
 
 ```
-┌─────────────┐      HTTP      ┌─────────────┐      API      ┌──────────────┐
-│   React     │ ────────────▶  │   FastAPI   │ ───────────▶  │  OpenRouter  │
-│  Frontend   │                │   Backend   │               │  (DeepSeek)  │
+┌─────────────┐      HTTPS     ┌─────────────┐      API      ┌──────────────┐
+│ GitHub Pages│ ────────────▶  │   Render    │ ───────────▶  │  OpenRouter  │
+│  React SPA  │                │  FastAPI    │               │  (DeepSeek)  │
 └─────────────┘                └─────────────┘               └──────────────┘
                                       │
                                       ▼
@@ -28,106 +31,93 @@ AI-powered document review application using DeepSeek R1 via OpenRouter API. Upl
                                 └──────────┘
 ```
 
-### Tech Stack
+### Tech stack
 
-**Backend:**
-- FastAPI (Python web framework)
-- SQLite (document storage)
-- OpenRouter API (AI integration)
-- Session-based data management (1-hour expiration)
+**Backend**
+- FastAPI
+- SQLite (document storage; resets on Render redeploy)
+- OpenRouter API
+- Session-based data with 1-hour expiration
 
-**Frontend:**
+**Frontend**
 - React 18 + TypeScript
-- Glassmorphism UI design
 - Drag-and-drop file upload
 
-**Deployment:**
-- Backend: AWS EC2 + Docker
-- Frontend: GitHub Pages
+**Deployment**
+- Backend: Render free web service (`https://cs-stuff-1.onrender.com`)
+- Frontend: GitHub Pages (`gh-pages` branch)
 
 ---
 
-## 🚀 Quick Start
+## Quick start
 
 ### Prerequisites
-- Python 3.11+
+
+- Python 3.12+
 - Node.js 18+
 - OpenRouter API key ([get one here](https://openrouter.ai/))
 
-### Backend Setup
+### Backend
 
 ```bash
 cd backend
 
-# Install dependencies
 pip install -r requirements.txt
-
-# Configure environment
 python setup_env.py
-# Enter your OpenRouter API key when prompted
-
-# Run server
 python run.py
 ```
 
-Backend runs at `http://localhost:8000`  
-API docs at `http://localhost:8000/docs`
+Backend: `http://localhost:8000`  
+API docs: `http://localhost:8000/docs`
 
-### Frontend Setup
+### Frontend
 
 ```bash
 cd frontend
 
-# Install dependencies
 npm install
-
-# Configure API endpoint
 echo "REACT_APP_API_URL=http://localhost:8000" > .env
-
-# Start development server
 npm start
 ```
 
-Frontend runs at `http://localhost:3000`
+Frontend: `http://localhost:3000`
 
 ---
 
-## 📦 How It Works
+## How it works
 
-### 1. Session Management
-- Each user gets a unique session ID (stored in browser)
+### Session management
+
+- Each visitor gets a session ID stored in the browser
 - Documents expire after 1 hour
 - Background cleanup runs every 15 minutes
 
-### 2. Document Upload
+### Document upload
+
 ```
 User uploads file → Extract text → Store in SQLite → Return document ID
 ```
 
-### 3. AI Review
+### AI review
+
 ```
-Request review → Send to DeepSeek R1 → Parse response → Store review → Return to user
+Request review → Send to DeepSeek → Store review → Return to user
 ```
 
-### 4. Data Flow
-```python
-# Backend endpoint
-POST /api/v1/documents/upload
-  ↓
-Document stored with session_id + expires_at
-  ↓
+### Data flow
+
+```
+POST /api/v1/auth/login
+POST /api/v1/documents/upload   (X-Session-Id header)
 POST /api/v1/reviews/{document_id}
-  ↓
-OpenRouter API call → DeepSeek R1 analysis
-  ↓
-Review stored and returned
 ```
 
 ---
 
-## 🔐 Environment Variables
+## Environment variables
 
 ### Backend `.env`
+
 ```env
 DATABASE_URL=sqlite:///./data/ai_reviewer.db
 OPENROUTER_API_KEY=sk-or-v1-your-key-here
@@ -136,134 +126,123 @@ FRONTEND_URL=http://localhost:3000
 ENVIRONMENT=development
 ```
 
-### Frontend `.env`
+On Render, set the same keys in the dashboard. Also set `PYTHON_VERSION=3.12.7`.
+
+### Frontend `.env` / `.env.production`
+
 ```env
 REACT_APP_API_URL=http://localhost:8000
 ```
 
----
-
-## 🚢 Deployment
-
-### Deploy Backend to EC2
-
-```powershell
-# From project root
-.\deploy.ps1 -EC2_IP "YOUR_IP" -KeyFile "path\to\key.pem" -OpenRouterKey "YOUR_KEY"
-```
-
-This script:
-1. Copies backend files to EC2
-2. Creates production `.env`
-3. Builds and starts Docker containers
-4. Tests health endpoint
-
-### Deploy Frontend to GitHub Pages
-
-```bash
-# Automatic via GitHub Actions
-git push origin main
-
-# Or manual
-cd frontend
-npm run build
-# Copy build to _site and push to gh-pages branch
-```
+Production build uses `https://cs-stuff-1.onrender.com`.
 
 ---
 
-## 📁 Project Structure
+## Deployment
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for the full Render + GitHub Pages steps.
+
+**Backend:** push to `main` (root directory `AI-solver-reviewer/backend`). Render redeploys automatically.
+
+**Frontend:** build with `REACT_APP_API_URL=https://cs-stuff-1.onrender.com`, copy the `build/` output into `ai-reviewer/` on the `gh-pages` branch, and push.
+
+---
+
+## Project structure
 
 ```
 AI-solver-reviewer/
 ├── backend/
 │   ├── app/
-│   │   ├── api/v1/endpoints/    # API routes
-│   │   ├── core/                # Config & session
+│   │   ├── api/v1/endpoints/    # API routes (auth, documents, reviews, chat)
+│   │   ├── core/                # Config and session
 │   │   ├── db/                  # Database setup
 │   │   ├── models/              # SQLAlchemy models
 │   │   └── services/            # OpenRouter integration
 │   ├── requirements.txt
+│   ├── runtime.txt              # Python 3.12.7 for Render
 │   ├── run.py
 │   └── Dockerfile
 ├── frontend/
 │   ├── src/
-│   │   ├── components/          # React components
+│   │   ├── components/
 │   │   ├── pages/               # Upload, Review, History
 │   │   └── services/            # API client
-│   ├── package.json
-│   └── Dockerfile
-├── docker-compose.prod.yml      # Production deployment
-├── deploy.ps1                   # Deployment script
+│   └── package.json
 └── README.md
 ```
 
 ---
 
-## 🔧 API Endpoints
+## API endpoints
 
 ### Authentication
-- `POST /api/v1/auth/login` - Get access token
+
+- `POST /api/v1/auth/login` — demo token (`demo_user` / `demo`)
 
 ### Documents
-- `POST /api/v1/documents/upload` - Upload document
-- `GET /api/v1/documents` - List documents (paginated)
-- `GET /api/v1/documents/{id}` - Get document details
+
+- `POST /api/v1/documents/upload` — upload document
+- `GET /api/v1/documents` — list documents
+- `GET /api/v1/documents/{id}` — get document details
 
 ### Reviews
-- `POST /api/v1/reviews/{document_id}` - Generate AI review
-- `GET /api/v1/reviews/{document_id}` - Get document reviews
-- `GET /api/v1/reviews` - List all reviews (paginated)
 
-**Headers Required:**
-- `Authorization: Bearer {token}`
-- `X-Session-Id: {uuid}`
+- `POST /api/v1/reviews/{document_id}` — generate AI review
+- `GET /api/v1/reviews/{document_id}` — get document reviews
+- `GET /api/v1/reviews` — list reviews
+
+**Headers:** `X-Session-Id: {uuid}` (required for upload and list). Optional `Authorization: Bearer {token}`.
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
-### Backend won't start
+### Backend will not start locally
+
 ```bash
-# Check logs
-docker-compose -f docker-compose.prod.yml logs backend
-
-# Verify environment
 cat backend/.env
+python backend/run.py
 ```
 
-### Frontend can't connect
-- Ensure backend is running on port 8000
-- Check CORS settings in `backend/app/main.py`
-- Verify `REACT_APP_API_URL` in frontend `.env`
+### Frontend cannot connect
 
-### Upload fails on GitHub Pages
-- GitHub Pages (HTTPS) can't call HTTP backend
-- **Solution:** Run frontend locally with `npm start`
+- Confirm the API is running
+- Check CORS in `backend/app/main.py`
+- Verify `REACT_APP_API_URL` (rebuild after changing it)
 
-### Database issues
+### First request on the live site is slow
+
+Render free tier cold start. Wait 30–60 seconds and retry.
+
+### Upload fails
+
+- Confirm `OPENROUTER_API_KEY` is set on Render (needed for reviews, not upload)
+- Confirm `X-Session-Id` is sent (the frontend sets this automatically)
+- SQLite data on Render resets on each redeploy
+
+### Database reset (local)
+
 ```bash
-# Reset database
 rm backend/data/ai_reviewer.db
-python backend/run.py  # Recreates tables
+python backend/run.py
 ```
 
 ---
 
-## 🔒 Security Features
+## Security
 
-- ✅ Session-based isolation (users only see their documents)
-- ✅ Automatic data expiration (1-hour TTL)
-- ✅ JWT authentication
-- ✅ CORS protection
-- ✅ No credentials in code (environment variables only)
+- Session isolation (users only see their own documents)
+- Automatic 1-hour expiration
+- Demo JWT login for the portfolio UI
+- CORS enabled
+- Secrets live in environment variables, not in source
 
 ---
 
-## 📊 Database Schema
+## Database schema
 
 ```sql
--- Documents table
 CREATE TABLE documents (
     id INTEGER PRIMARY KEY,
     filename VARCHAR NOT NULL,
@@ -274,7 +253,6 @@ CREATE TABLE documents (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Reviews table
 CREATE TABLE reviews (
     id INTEGER PRIMARY KEY,
     document_id INTEGER REFERENCES documents(id),
@@ -287,39 +265,34 @@ CREATE TABLE reviews (
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
-1. Fork the repository
-2. Create feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open Pull Request
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ---
 
-## 📝 License
+## License
 
-MIT License - see [LICENSE](./LICENSE) file.
-
----
-
-## 👤 Author
-
-**Ibrahim**
-- GitHub: [@1brah1](https://github.com/1brah1)
-- Portfolio: https://1brah1.github.io/cs_stuff/
+MIT License — see [LICENSE](./LICENSE).
 
 ---
 
-## 🙏 Acknowledgments
+## Author
 
-- [OpenRouter](https://openrouter.ai/) - AI API gateway
-- [DeepSeek](https://www.deepseek.com/) - R1 language model
-- [FastAPI](https://fastapi.tiangolo.com/) - Modern Python web framework
-- [React](https://react.dev/) - UI library
+**Ibrahim**  
+GitHub: [@1brah1](https://github.com/1brah1)  
+Portfolio: [https://1brah1.github.io/cs_stuff/](https://1brah1.github.io/cs_stuff/)
 
 ---
 
-**Last Updated:** January 2025
+## Acknowledgments
+
+- [OpenRouter](https://openrouter.ai/) — AI API gateway
+- [DeepSeek](https://www.deepseek.com/) — language model
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [React](https://react.dev/)
+- [Render](https://render.com/) — backend hosting
+
+---
+
+**Last updated:** August 2026

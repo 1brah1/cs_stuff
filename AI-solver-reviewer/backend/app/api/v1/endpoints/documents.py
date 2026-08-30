@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Form
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from app.db.database import get_db
@@ -33,8 +33,8 @@ class DocumentDetailResponse(DocumentResponse):
 @router.post("/upload", response_model=DocumentResponse)
 async def upload_document(
     file: UploadFile = File(...),
-    session_id: str = Form(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    session_id: str = Depends(get_session_id),
 ):
     """
     Upload a document (text or PDF) for review
@@ -154,6 +154,9 @@ async def get_document(
             "created_at": r.created_at.isoformat()
         } for r in reviews]
     )
+
+
+
 
 
 

@@ -1,5 +1,7 @@
 # AWS EC2 Setup Guide for AI-Solver-Reviewer
 
+> **Deprecated.** Production hosting moved to Render + GitHub Pages. See [DEPLOYMENT.md](./DEPLOYMENT.md). This file is kept only as a historical AWS reference.
+
 ## Prerequisites
 - AWS Account (Account ID: 250025622892)
 - AWS CLI installed and configured
