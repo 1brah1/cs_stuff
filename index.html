@@ -263,6 +263,12 @@
             margin: 0 auto;
         }
 
+        .latest-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
         .featured-card {
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
@@ -435,6 +441,74 @@
             animation-delay: -4s;
         }
 
+        .signal-svg {
+            width: min(88%, 360px);
+            height: auto;
+            color: var(--accent);
+            animation: floatSignal 7s ease-in-out infinite;
+        }
+
+        .signal-axis,
+        .signal-embargo {
+            stroke: var(--text-muted);
+            stroke-width: 1;
+            opacity: 0.45;
+        }
+
+        .signal-embargo {
+            stroke-dasharray: 3 4;
+        }
+
+        .signal-fill {
+            fill: currentColor;
+            opacity: 0.12;
+        }
+
+        .signal-line {
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.25;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .signal-hit {
+            fill: currentColor;
+            transform-origin: center;
+            transform-box: fill-box;
+            animation: pulseHit 2.4s ease-in-out infinite;
+        }
+
+        .signal-hit-ring {
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.25;
+            opacity: 0.45;
+        }
+
+        .signal-caption {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            fill: var(--text-muted);
+        }
+
+        .signal-stamp {
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.25;
+        }
+
+        .signal-stamp-text {
+            font-family: var(--font-mono);
+            font-size: 8px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            fill: currentColor;
+        }
+
         @keyframes gridShift {
             0% { transform: translate(0, 0); }
             100% { transform: translate(24px, 24px); }
@@ -443,6 +517,16 @@
         @keyframes floatShape {
             0%, 100% { transform: skewX(-18deg) translateY(0); }
             50% { transform: skewX(-18deg) translateY(-8px); }
+        }
+
+        @keyframes floatSignal {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        @keyframes pulseHit {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.65); }
         }
 
         /* ——— Works ——— */
@@ -693,7 +777,9 @@
             }
 
             .featured-preview::before,
-            .parallelogram {
+            .parallelogram,
+            .signal-svg,
+            .signal-hit {
                 animation: none;
             }
 
@@ -746,34 +832,72 @@
     <section class="latest" id="latest">
         <div class="section-head revealable">
             <h2 class="section-title">Latest</h2>
-            <span class="section-label">Jul 2026</span>
+            <span class="section-label">Aug 2026</span>
         </div>
 
-        <a href="https://1brah1.github.io/signed-area/" target="_blank" rel="noopener noreferrer" class="featured-card revealable">
-            <div class="featured-body">
-                <span class="featured-label">New</span>
-                <h3 class="featured-title">Signed Area</h3>
-                <p class="featured-blurb">I built this to make linear algebra click — signed area, convex hulls, SVD, PCA, probability, rank &amp; approximation error, attention and softmax — all as one scrollable story.</p>
-                <div class="featured-footer">
-                    <div class="featured-chips">
-                        <span class="chip">Linear algebra</span>
-                        <span class="chip">SVD &amp; PCA</span>
-                        <span class="chip">Attention</span>
+        <div class="latest-stack">
+            <a href="https://github.com/1brah1/SignalProof" target="_blank" rel="noopener noreferrer" class="featured-card revealable">
+                <div class="featured-body">
+                    <span class="featured-label">New</span>
+                    <h3 class="featured-title">SignalProof</h3>
+                    <p class="featured-blurb">I built this to prove HK-equity signals are honest — leak injection, walk-forward plus DSR/PBO audit, and a local LLM referee that never sees prices.</p>
+                    <div class="featured-footer">
+                        <div class="featured-chips">
+                            <span class="chip">HK equities</span>
+                            <span class="chip">DSR &amp; PBO</span>
+                            <span class="chip">LLM referee</span>
+                        </div>
+                        <span class="featured-link">
+                            GitHub
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </span>
                     </div>
-                    <span class="featured-link">
-                        Open project
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </span>
                 </div>
-            </div>
-            <div class="featured-preview" aria-hidden="true">
-                <div class="featured-preview-inner">
-                    <div class="parallelogram"></div>
-                    <div class="parallelogram"></div>
-                    <div class="parallelogram"></div>
+                <div class="featured-preview" aria-hidden="true">
+                    <div class="featured-preview-inner">
+                        <svg class="signal-svg" viewBox="0 0 300 168" fill="none">
+                            <line class="signal-axis" x1="16" y1="142" x2="284" y2="142" />
+                            <line class="signal-embargo" x1="162" y1="18" x2="162" y2="142" />
+                            <text class="signal-caption" x="168" y="30">leak</text>
+                            <path class="signal-fill" d="M16 110 L38 104 L54 116 L72 100 L90 110 L110 94 L130 106 L148 90 L162 98 L176 36 L188 126 L206 88 L226 114 L248 80 L276 100 L276 142 L16 142 Z" />
+                            <path class="signal-line" d="M16 110 L38 104 L54 116 L72 100 L90 110 L110 94 L130 106 L148 90 L162 98 L176 36 L188 126 L206 88 L226 114 L248 80 L276 100" />
+                            <circle class="signal-hit-ring" cx="176" cy="36" r="9" />
+                            <circle class="signal-hit" cx="176" cy="36" r="4" />
+                            <rect class="signal-stamp" x="20" y="18" width="44" height="16" rx="2" />
+                            <text class="signal-stamp-text" x="28" y="29">WARN</text>
+                            <rect class="signal-stamp" x="70" y="18" width="40" height="16" rx="2" opacity="0.85" />
+                            <text class="signal-stamp-text" x="78" y="29">FAIL</text>
+                        </svg>
+                    </div>
                 </div>
-            </div>
-        </a>
+            </a>
+
+            <a href="https://1brah1.github.io/signed-area/" target="_blank" rel="noopener noreferrer" class="featured-card revealable">
+                <div class="featured-body">
+                    <span class="featured-label">Jul 2026</span>
+                    <h3 class="featured-title">Signed Area</h3>
+                    <p class="featured-blurb">I built this to make linear algebra click — signed area, convex hulls, SVD, PCA, probability, rank &amp; approximation error, attention and softmax — all as one scrollable story.</p>
+                    <div class="featured-footer">
+                        <div class="featured-chips">
+                            <span class="chip">Linear algebra</span>
+                            <span class="chip">SVD &amp; PCA</span>
+                            <span class="chip">Attention</span>
+                        </div>
+                        <span class="featured-link">
+                            Open project
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="featured-preview" aria-hidden="true">
+                    <div class="featured-preview-inner">
+                        <div class="parallelogram"></div>
+                        <div class="parallelogram"></div>
+                        <div class="parallelogram"></div>
+                    </div>
+                </div>
+            </a>
+        </div>
     </section>
 
     <main class="works" id="work">
